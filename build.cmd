@@ -1,0 +1,1 @@
+pyinstaller --distpath .dist/final --workpath .dist Simux.spec 

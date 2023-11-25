@@ -1,0 +1,50 @@
+{
+  "env": {
+    "es2021": true
+  },
+  "rules": {
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "semi": [
+      "warn",
+      "never"
+    ],
+    "eol-last": [
+      "warn",
+      "never"
+    ],
+    "indent": [
+      "warn",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "no-empty-function": "off",
+    "no-empty": "off",
+    "no-empty-pattern": "off",
+    "no-var": "off",
+    "no-unused-vars": "warn",
+    "prefer-const": "off",
+    "no-constant-condition": "off",
+    "comma-dangle": [
+      "warn",
+      "never"
+    ],
+    "quote-props": [
+      "warn",
+      "as-needed"
+    ],
+    "jsx-quotes": [
+      "warn",
+      "prefer-double"
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

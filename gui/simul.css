@@ -1,0 +1,76 @@
+.chart-wrapper {
+  width: 100%;
+  padding: 15px;
+}
+
+.chartContainer {
+  width: 100%;
+  height: 700px;
+}
+
+.toolbar {
+  width: 100%;
+  height: calc(100% - 730px);
+  padding: 15px;
+  padding-left: 30px;
+  padding-right: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toolbox {
+  width: 160px;
+  height: 160px;
+  background-color: #333544;
+  border-radius: 3px;
+  margin-left: 5px;
+  margin-right: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.toolboxcenter {
+  width: 230px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.current_speed {
+  font-size: 15px;
+}
+
+.current_time {
+  font-size: 50px;
+}
+
+.toolbox_value_title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.toolbox_value {
+  font-size: 40px;
+}
+
+.tool1 {
+  color: #4f81bc;
+}
+
+.tool2 {
+  color: #c0504d;
+}
+
+.tool3 {
+  color: #9bbb59;
+}
+
+.toolbox_button {
+  font-size: 22px;
+}
+
+.focusable {
+  border: 4px solid #575863;
+}

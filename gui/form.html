@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head data-bs-theme="dark">
+  <title>Simux | Configurações</title>
+  <link rel="stylesheet" type="text/css" href="./main.css">
+  <link rel="stylesheet" type="text/css" href="./statics/bootstrap.css">
+  <script src="./main.js"></script>
+  <script src="./statics/jquery.js"></script>
+  <script src="./statics/bootstrap.js"></script>
+  <script type="text/javascript" src="./statics/jquery.mask.js"></script>
+  <script type="text/javascript" src="/eel.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="./statics/favicon.svg">
+</head>
+
+<body>
+  <div class="container d-flex flex-column justify-items-center align-items-center" name="home-page">
+    <h1 class="mt-3">Configurações</h1>
+    <form class="mt-3" style="width: 400px" method="get" action="./simul.html">
+      <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="w-50 me-2">
+          <label for="malha" class="form-label">Malha</label>
+          <select name="malha" id="controllerAction" class="form-select" aria-label="Malha">
+            <option value="closed">Malha fechada</option>
+            <option value="open">Malha aberta</option>
+          </select>
+        </div>
+        <div class="w-50 ms-2">
+          <label for="controllerAction" class="form-label">Ação do controlador</label>
+          <select name="controllerAction" id="controllerAction" class="form-select" aria-label="Ação do controlador">
+            <option value="direct">Direta</option>
+            <option value="reverse">Reversa</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="w-50 me-2">
+          <label for="processGain" class="form-label">Ganho do processo</label>
+          <input type="tel" class="form-control" name="processGain" id="processGain" value="2">
+          <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
+        </div>
+        <div class="w-50 ms-2">
+          <label for="timeConstant" class="form-label">Constante de tempo (s)</label>
+          <input type="tel" class="form-control" name="timeConstant" id="timeConstant" value="15">
+          <div id="help2" class="form-text">Mínimo de 1 e máximo de 100.</div>
+        </div>
+      </div>
+      <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="w-50 me-2">
+          <label for="deathTime" class="form-label">Tempo morto (s)</label>
+          <input type="tel" class="form-control" name="deathTime" id="deathTime" value="5">
+          <div id="help3" class="form-text">Mínimo de 1 e máximo de 20.</div>
+        </div>
+        <div class="w-50 ms-2">
+          <label for="bias" class="form-label">Bias (%)</label>
+          <input type="tel" class="form-control" name="bias" id="bias" value="50">
+          <div id="help4" class="form-text">Mínimo de 0 e máximo de 100.</div>
+        </div>
+      </div>
+      <div class="mb-3 w-100">
+        <label for="errorSpeed" class="form-label">Velocidade do desvio (%/s)</label>
+        <input type="tel" class="form-control" name="errorSpeed" id="errorSpeed" value="5">
+        <div id="help5" class="form-text">Mínimo de -30% e máximo de 30%.</div>
+      </div>
+      <hr />
+      <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="w-50 me-2">
+          <label for="initialSP" class="form-label">Valor inicial do SP (%)</label>
+          <input type="tel" class="form-control" name="initialSP" id="initialSP" value="50">
+          <div id="help6" class="form-text">Mínimo de 5% e máximo de 90%.</div>
+        </div>
+        <div class="w-50 ms-2">
+          <label for="initialPV" class="form-label">Valor inicial da PV (%)</label>
+          <input type="tel" class="form-control" name="initialPV" id="initialPV" value="50">
+          <div id="help7" class="form-text">Mínimo de 5% e máximo de 90%.</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 mt-2">Iniciar simulação</button>
+    </form>
+  </div>
+  <script>
+    $(document).ready(function () {
+      $("#processGain").inputmask("numeric", {
+        min: 0.1,
+        max: 5
+      });
+      $("#timeConstant").inputmask("numeric", {
+        min: 1,
+        max: 100
+      });
+      $("#deathTime").inputmask("numeric", {
+        min: 1,
+        max: 20
+      });
+      $("#bias").inputmask("numeric", {
+        min: 0,
+        max: 100
+      });
+      $("#initialSP").inputmask("numeric", {
+        min: 5,
+        max: 90
+      });
+      $("#initialPV").inputmask("numeric", {
+        min: 5,
+        max: 90
+      });
+    });
+  </script>
+</body>
+
+</html>

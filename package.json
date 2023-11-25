@@ -1,0 +1,11 @@
+{
+  "name": "simux",
+  "version": "1.0.0",
+  "description": "Simulador de controle automático",
+  "author": "Pedro Mota",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^8.54.0"
+  }
+}

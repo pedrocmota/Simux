@@ -1,0 +1,16 @@
+[data-bs-theme=dark] {
+  --bs-body-bg: #282a36 !important;
+}
+
+input {
+  text-align: left !important;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box !important;
+}
