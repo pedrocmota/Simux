@@ -19,6 +19,26 @@
   align-items: center;
 }
 
+@media screen and (max-height: 910px) {
+  .chartContainer {
+    height: 600px;
+  }
+
+  .toolbar {
+    height: calc(100% - 630px);
+  }
+}
+
+@media screen and (max-height: 810px) {
+  .chartContainer {
+    height: 500px;
+  }
+
+  .toolbar {
+    height: calc(100% - 530px);
+  }
+}
+
 .toolbox {
   width: 160px;
   height: 160px;
@@ -30,6 +50,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  border: none;
+  outline: none;
 }
 
 .toolboxcenter {
@@ -57,14 +80,17 @@
 
 .tool1 {
   color: #4f81bc;
+  cursor: auto;
 }
 
 .tool2 {
   color: #c0504d;
+  cursor: auto;
 }
 
 .tool3 {
   color: #9bbb59;
+  cursor: auto;
 }
 
 .toolbox_button {
@@ -73,4 +99,27 @@
 
 .focusable {
   border: 4px solid #575863;
+}
+
+/*  */
+
+.ui-widget-overlay {
+  user-select: none;
+  pointer-events: none;
+}
+
+.ui-dialog {
+  background-color: #2d3748 !important;
+  color: white !important;
+  z-index: 99999 !important;
+  border: 1px solid #575863 !important;
+}
+
+.ui-dialog > * {
+  color: white !important;
+}
+
+.ui-dialog-titlebar, .ui-dialog-buttonpane {
+  background-color: transparent !important;
+  border: none !important;
 }

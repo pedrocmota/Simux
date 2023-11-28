@@ -3,12 +3,11 @@
 
 <head data-bs-theme="dark">
   <title>Simux | Página inicial</title>
-  <link rel="stylesheet" type="text/css" href="./main.css">
+  <link rel="stylesheet" type="text/css" href="./global.css">
   <link rel="stylesheet" type="text/css" href="./statics/bootstrap.css">
-  <script src="./main.js"></script>
   <script src="./statics/jquery.js"></script>
   <script src="./statics/bootstrap.js"></script>
-  <script type="text/javascript" src="/eel.js"></script>
+  <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="./statics/favicon.svg">
@@ -18,12 +17,26 @@
   <div class="container pt-4 d-flex flex-column justify-items-center align-items-center" name="home-page">
     <h1>Seja bem vindo ao <b>Simux</b></h1>
     <p>Versão v1.0 | Desenvolvido por Pedro Mota</p>
-    <img src="./statics/favicon.svg" alt="Logo" width="400" height="400">
-    <a href="./form.html">
-      <button type="button" class="btn btn-primary">Fazer uma simulação</button>
+    <p>Para começar, clique no botão abaixo ou tecle <b>Enter</b></p>
+    <img src="./statics/favicon.svg" alt="Logo" width="400" height="400" style="rotate: 3deg;">
+    <a href="./form/form.html">
+      <button type="button" class="btn btn-primary doit">Fazer uma simulação</button>
     </a>
+    <div class="mt-5 d-sm-inline-flex flex-column align-items-center">
+      Consulte o repositório oficial no Github para mais informações
+      em <a href="https://github.com/pedrocmota/simux" target="_blank">https://github.com/pedrocmota/simux</a>
+    </div>
   </div>
-
+  <script>
+    window.resizeTo(1366 + 50, 768 + 50)
+    $(document).ready(() => {
+      $('body').keydown((e) => {
+        if (e.key === 'Enter') {
+          $('.doit').click()
+        }
+      })
+    })
+  </script>
 </body>
 
 </html>

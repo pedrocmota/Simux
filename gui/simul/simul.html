@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head data-bs-theme="dark">
+  <title>Simux | Simulação</title>
+  <link rel="stylesheet" type="text/css" href="../global.css">
+  <link rel="stylesheet" type="text/css" href="./simul.css">
+  <link rel="stylesheet" type="text/css" href="../statics/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="../statics/jquery-ui.css">
+  <script src="./chart.js"></script>
+  <script src="./shorcuts.js"></script>
+  <script src="../statics/jquery.js"></script>
+  <script src="../statics/jquery-ui.js"></script>
+  <script src="../statics/bootstrap.js"></script>
+  <script src="../statics/chart.js"></script>
+  <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="../statics/favicon.svg">
+  <style>
+    body {
+      min-width: 1366px;
+      min-height: 768px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chart-wrapper">
+    <div class="chartContainer" id="chartContainer"></div>
+  </div>
+  <div class="toolbar">
+    <div class="toolbox tool1">
+      <span class="toolbox_value_title">SP</span>
+      <span class="toolbox_value">0%</span>
+    </div>
+    <div class="toolbox tool2">
+      <span class="toolbox_value_title">PV</span>
+      <span class="toolbox_value">0%</span>
+    </div>
+    <div class="toolbox tool3">
+      <span class="toolbox_value_title">MV</span>
+      <span class="toolbox_value">0%</span>
+    </div>
+    <button class="toolbox tool4 toolboxcenter focusable">
+      <span class="current_speed">Em execução</span>
+      <span class="current_speed">Velocidade: 1x</span>
+      <span class="current_time">0s</span>
+      <span class="time_status">PAUSAR</span>
+    </button>
+    <button class="toolbox tool5" onclick="openPopup()">
+      <span class="toolbox_button">Constantes</span>
+    </button>
+    <button class="toolbox tool6">
+      <span class="toolbox_button">Ações</span>
+    </button>
+    <button class="toolbox tool7">
+      <button onclick="teste()">
+        criar
+      </button>
+      <button onclick="plotar()">
+        plotar
+      </button> -->
+      <!-- <span class="toolbox_button">Sair</span> -->
+    </button>
+  </div>
+  <script>
+    window.onload = () => {
+      generateChart()
+      startShortcut()
+    }
+    function openPopup() {
+      $(function() {
+        $('#dialog' ).dialog()
+      })
+      $('#dialog').dialog({
+        width: 500,
+        height: 500,
+        modal: true,
+        buttons: [{
+          text: 'example1',
+          class: 'btn btn-primary',
+          click: function() {
+            $(this).dialog('close')
+          }
+        }, {
+          text: 'example2',
+          class: 'btn btn-primary',
+          click: function() {
+            $(this).dialog('close')
+          }
+        }]
+  })
+}  </script>
+</body>
+<div id="dialog" title="Basic dialog" style="display: none;">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the &apos;x&apos; icon.</p>
+</div>
+</html>

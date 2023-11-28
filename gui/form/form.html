@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head data-bs-theme="dark">
+  <title>Simux | Configurações</title>
+  <link rel="stylesheet" type="text/css" href="../global.css">
+  <link rel="stylesheet" type="text/css" href="../statics/bootstrap.css">
+  <link rel="stylesheet" href="../statics/rangeSlider.css" />
+  <script type="text/javascript" src="../statics/jquery.js"></script>
+  <script type="text/javascript" src="../statics/bootstrap.js"></script>
+  <script type="text/javascript" src="../statics/jquery.mask.js"></script>
+  <script type="text/javascript" src="../statics/rangeSlider.js"></script>
+  <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="../statics/favicon.svg">
+</head>
+
+<body>
+  <div class="container d-flex flex-column justify-items-center align-items-center" name="home-page">
+    <h1 class="mt-3">Configurações</h1>
+    <form class="mt-3" style="width: 400px" method="get" action="../simul/simul.html">
+      <div class="mb-3 w-100">
+        <div>
+          <label for="controllerAction" class="form-label">Ação do controlador</label>
+          <select name="controller_action" id="controllerAction" class="form-select" aria-label="Ação do controlador" tabindex="0">
+            <option value="Direct">Direta</option>
+            <option value="Reverse">Reversa</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="w-50 me-2">
+          <label for="processGain" class="form-label">Ganho do processo</label>
+          <input type="tel" class="form-control" name="model_gain" id="processGain" value="2" tabindex="1">
+          <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
+        </div>
+        <div class="w-50 ms-2">
+          <label for="timeConstant" class="form-label">Constante de tempo (s)</label>
+          <input type="tel" class="form-control" name="model_tc" id="timeConstant" value="15" tabindex="2">
+          <div id="help2" class="form-text">Mínimo de 1 e máximo de 100.</div>
+        </div>
+      </div>
+      <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="w-50 me-2">
+          <label for="deathTime" class="form-label">Tempo morto (s)</label>
+          <input type="tel" class="form-control" name="model_dt" id="deathTime" value="5" tabindex="3">
+          <div id="help3" class="form-text">Mínimo de 1 e máximo de 20.</div>
+        </div>
+        <div class="w-50 ms-2">
+          <label for="bias" class="form-label">Bias (%)</label>
+          <input type="tel" class="form-control" name="model_bias" id="bias" value="50" tabindex="4">
+          <div id="help4" class="form-text">Mínimo de 0 e máximo de 100.</div>
+        </div>
+      </div>
+      <div class="mb-3 w-100">
+        <label for="noise" class="form-label">Ruído do processo:</label>
+        <input type="text" id="noise" name="noise" tabindex="5"/>
+        <div id="help5" class="form-text">Ruído desabilitado</div>
+      </div>
+      <hr />
+      <div class="mb-3 w-100">
+        <label for="initialKp" class="form-label">Valor inicial do KP</label>
+        <input type="tel" class="form-control" name="kp" id="initialKp" value="2" tabindex="6">
+        <div id="help7" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
+      </div>
+      <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="w-50 me-2">
+          <label for="initialKi" class="form-label">Valor inicial do Ki</label>
+          <input type="tel" class="form-control" name="ki" id="initialKi" value="5" tabindex="7">
+          <div id="help8" class="form-text">Mínimo de 0 e máximo de 50.</div>
+        </div>
+        <div class="w-50 ms-2">
+          <label for="initialKd" class="form-label">Valor inicial do Kd</label>
+          <input type="tel" class="form-control" name="kd" id="initialKd" value="50" tabindex="8">
+          <div id="help9" class="form-text">Mínimo de 0 e máximo de 50.</div>
+        </div>
+      </div>
+      <div class="mb-3 w-100">
+        <label for="initialSP" class="form-label">Valor inicial do SP (%)</label>
+        <input type="tel" class="form-control" name="initSP" id="initialSP" value="50" tabindex="9">
+        <div id="help10" class="form-text">Mínimo de 5% e máximo de 90%.</div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 mt-2 mb-5" tabindex="10">Iniciar simulação</button>
+    </form>
+  </div>
+  <script>
+    $(document).ready(() => {
+      $('#processGain').inputmask('numeric', {
+        min: 0.1,
+        max: 5
+      })
+      $('#timeConstant').inputmask('numeric', {
+        min: 1,
+        max: 100
+      })
+      $('#deathTime').inputmask('numeric', {
+        min: 1,
+        max: 20
+      })
+      $('#bias').inputmask('numeric', {
+        min: 0,
+        max: 100
+      })
+      $('#noise').ionRangeSlider({
+        type: 'double',
+        min: 0,
+        max: 1.25,
+        step: 0.1,
+        from: 0,
+        to: 0.1,
+        grid: false,
+        onChange: function (data) {
+          if (data.from == 0 && data.to == 0) {
+            $('#help5').text('Ruído desabilitado')
+          } else {
+            $('#help5').text(`Ruído entre ${data.from} e ${data.to}%, para mais ou para menos.`)
+          }
+        }
+      })
+      $('#initialKp').inputmask('numeric', {
+        min: 0.1,
+        max: 5
+      })
+      $('#initialKi').inputmask('numeric', {
+        min: 0,
+        max: 50
+      })
+      $('#initialKd').inputmask('numeric', {
+        min: 0,
+        max: 50
+      })
+      $('#initialSP').inputmask('numeric', {
+        min: 5,
+        max: 90
+      })
+
+      $('form').submit((e) => {
+        e.preventDefault()
+        const data = $('form').serializeArray().reduce((obj, item) => {
+          obj[item.name] = item.value
+          return obj
+        }, {})
+        data['model_noise_min'] = data['noise'].split(';')[0]
+        data['model_noise_max'] = data['noise'].split(';')[1]
+        delete data['noise']
+        console.log(data)
+      })
+    })
+  </script>
+</body>
+
+</html>

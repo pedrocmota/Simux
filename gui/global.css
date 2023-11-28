@@ -1,0 +1,28 @@
+[data-bs-theme=dark] {
+  --bs-body-bg: #282a36 !important;
+}
+
+input {
+  text-align: left !important;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box !important;
+}
+
+.irs-bar, .irs-from, .irs-to, .irs-single {
+  background-color: #0d6efd !important;
+}
+
+.irs-handle > i {
+  background-color: white !important;
+}
+
+.irs-line {
+  background-color: #dee2e6 !important;
+}
