@@ -1,1 +1,16 @@
-pyinstaller --distpath .dist/final --workpath .dist Simux.spec 
+python -m nuitka ^
+--standalone ^
+--onefile ^
+--follow-imports ^
+--include-data-dir=./gui=gui ^
+--windows-icon-from-ico=favicon.ico ^
+--windows-disable-console ^
+--onefile-tempdir-spec="%TEMP%\\simux-temp" ^
+--company-name="IFBA - Salvador" ^
+--product-name="Simux" ^
+--file-version="1.0" ^
+--product-version="1.0" ^
+--file-description="Simux" ^
+--copyright="Copyright (c) 2023 - IFBA SSA" ^
+--output-dir=".build" ^
+-o Simux.exe src/main.py

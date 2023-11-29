@@ -1,37 +1,4 @@
-const generateSP = () => {
-  const sp = []
-  for (let i = 0; i < 300; i++) {
-    sp.push({
-      x: i,
-      y: i < 30 ? 50 : 30
-    })
-  }
-  return sp
-}
-
-const generatePV = () => {
-  const pv = []
-  for (let i = 0; i < 300; i++) {
-    pv.push({
-      x: i,
-      y: 60
-    })
-  }
-  return pv
-}
-
-const generateCV = () => {
-  const cv = []
-  for (let i = 0; i < 300; i++) {
-    cv.push({
-      x: i,
-      y: 30
-    })
-  }
-  return cv
-}
-
-var chart = null
+let chart = null
 
 const generateChart = () => {
   chart = new CanvasJS.Chart('chartContainer', {
@@ -64,6 +31,7 @@ const generateChart = () => {
       gridColor: '#444242'
     },
     toolTip: {
+      enabled: false,
       contentFormatter: (values) => `
         <div style="padding:10px">
         <p style="font-size: 18px">Momento: <b>${values.entries[0].dataPoint.x}</b>s</p>
@@ -78,32 +46,26 @@ const generateChart = () => {
       fontColor: '#f8f8f2',
       borderColor: '#787C8F'
     },
-    legend: {
-      legendMarkerType: 'square'
-    },
     data: [{
       type: 'line',
       color: '#4f81bc',
       name: 'SP - Set Point',
       showInLegend: true,
-      legendMarkerType: 'square',
-      dataPoints: generateSP()
+      dataPoints: [{x:-1,y:-1}]
     },
     {
       type: 'line',
       color: '#c0504e',
       name: 'PV - Variável de processo',
       showInLegend: true,
-      legendMarkerType: 'square',
-      dataPoints: generatePV()
+      dataPoints: [{x:-1,y:-1}]
     },
     {
       type: 'line',
       color: '#9bbb58',
       name: 'MV - Variável manipulada',
       showInLegend: true,
-      legendMarkerType: 'square',
-      dataPoints: generateCV()
+      dataPoints: [{x:-1,y:-1}]
     }]
   })
   chart.render()
@@ -123,7 +85,6 @@ async function teste() {
     kd: 0.0,
     initSP: 50
   })()
-  console.log(vt)
 }
 async function plotar() {
   const dataSP = []

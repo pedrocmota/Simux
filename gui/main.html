@@ -16,7 +16,7 @@
 <body>
   <div class="container pt-4 d-flex flex-column justify-items-center align-items-center" name="home-page">
     <h1>Seja bem vindo ao <b>Simux</b></h1>
-    <p>Versão v1.0 | Desenvolvido por Pedro Mota</p>
+    <p>Versão v<b id="version"></b> | Desenvolvido por Pedro Mota</p>
     <p>Para começar, clique no botão abaixo ou tecle <b>Enter</b></p>
     <img src="./statics/favicon.svg" alt="Logo" width="400" height="400" style="rotate: 3deg;">
     <a href="./form/form.html">
@@ -30,6 +30,8 @@
   <script>
     window.resizeTo(1366 + 50, 768 + 50)
     $(document).ready(() => {
+      const version = new URLSearchParams(window.location.search).get('version')
+      $('#version').text(version)
       $('body').keydown((e) => {
         if (e.key === 'Enter') {
           $('.doit').click()

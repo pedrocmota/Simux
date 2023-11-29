@@ -4,6 +4,7 @@ from scipy.integrate import odeint
 import warnings
 import random
 
+
 class PID_Controller(object):
     def __init__(self):
         self.Kp, self.Ki, self.Kd = 1, 0.1, 0
@@ -124,6 +125,7 @@ class FOPDT_Model(object):
         y = odeint(self._calc, work_PV, ts)
         return y[-1]
 
+
 class Simulator:
     def __init__(self, params):
         self.model_gain = params.get("model_gain")
@@ -135,7 +137,7 @@ class Simulator:
         self.initSP = params.get("initSP")
         self.newSP = self.initSP
 
-        if(params.get("controller_action") == 'Reverse'):
+        if params.get("controller_action") == "Reverse":
             self.model_gain *= -1
 
         self.kp = params.get("kp")
@@ -143,9 +145,11 @@ class Simulator:
         self.kd = params.get("kd")
         self.SP = params.get("sp")
 
-        self.maxsize = 300 + 1
+        self.maxsize = 3600 + 1
 
-        self.noise = np.random.uniform(self.model_noise_min, self.model_noise_max, self.maxsize)
+        self.noise = np.random.uniform(
+            self.model_noise_min, self.model_noise_max, self.maxsize
+        )
         self.noise *= np.random.choice([-1, 1], self.maxsize)
 
         self.pid = PID_Controller()
@@ -182,7 +186,9 @@ class Simulator:
         self.CV[i] = self.pid(self.PV[i], self.SP[i], self.direction)
 
         if i < (self.maxsize - 1):
-            self.PV[i + 1] = self.process_model.update(self.PV[i], [i, i + 1]) + self.noise[i]
+            self.PV[i + 1] = (
+                self.process_model.update(self.PV[i], [i, i + 1]) + self.noise[i]
+            )
         else:
             self.PV[i] = self.PV[i - 1] + self.noise[i]
 

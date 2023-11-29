@@ -1,0 +1,89 @@
+.toolbox {
+  width: 160px;
+  height: 160px;
+  background-color: #333544;
+  border-radius: 3px;
+  margin-left: 5px;
+  margin-right: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.toolbox:focus {
+  border: 4px solid #575863;
+}
+
+/* .focusable {
+  border: 4px solid #575863;
+} */
+
+.main_box {
+  width: 230px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.current_status {
+  font-size: 18px;
+}
+
+.current_speed {
+  font-size: 15px;
+}
+
+.status_paused {
+  color: #c0504d;
+}
+
+.status_running {
+  color: #9bbb59;
+}
+
+.current_time {
+  font-size: 50px;
+}
+
+.toolbox_value_title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.toolbox_value {
+  font-size: 40px;
+}
+
+.sp_box {
+  color: #4f81bc;
+}
+
+.pv_box {
+  color: #c0504d;
+}
+
+.mv_box {
+  color: #9bbb59;
+}
+
+.toolbox_button {
+  font-size: 22px;
+}
+
+.sp_input {
+  width: 100%;
+  height: 60px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: #4f81bc;
+  font-size: 40px;
+  text-align: center !important;
+}
+
+.sp_input_selected {
+  border: 4px solid #4f81bc;
+}

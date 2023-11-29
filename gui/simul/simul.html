@@ -5,14 +5,21 @@
   <title>Simux | Simulação</title>
   <link rel="stylesheet" type="text/css" href="../global.css">
   <link rel="stylesheet" type="text/css" href="./simul.css">
+  <link rel="stylesheet" type="text/css" href="./box.css">
+  <link rel="stylesheet" type="text/css" href="./popups.css">
   <link rel="stylesheet" type="text/css" href="../statics/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="../statics/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="../statics/jquery.toast.css">
   <script src="./chart.js"></script>
   <script src="./shorcuts.js"></script>
+  <script src="./popups.js"></script>
+  <script src="./actions.js"></script>
+  <script src="./toolbox.js"></script>
   <script src="../statics/jquery.js"></script>
   <script src="../statics/jquery-ui.js"></script>
   <script src="../statics/bootstrap.js"></script>
   <script src="../statics/chart.js"></script>
+  <script src="../statics/jquery.toast.js"></script>
   <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,70 +37,116 @@
     <div class="chartContainer" id="chartContainer"></div>
   </div>
   <div class="toolbar">
-    <div class="toolbox tool1">
+    <div class="toolbox sp_box tool1" tabindex="1">
       <span class="toolbox_value_title">SP</span>
-      <span class="toolbox_value">0%</span>
+      <input class="sp_input" value="50%" disabled />
     </div>
-    <div class="toolbox tool2">
+    <div class="toolbox pv_box tool2" tabindex="2">
       <span class="toolbox_value_title">PV</span>
       <span class="toolbox_value">0%</span>
     </div>
-    <div class="toolbox tool3">
+    <div class="toolbox mv_box tool3" tabindex="3">
       <span class="toolbox_value_title">MV</span>
       <span class="toolbox_value">0%</span>
     </div>
-    <button class="toolbox tool4 toolboxcenter focusable">
-      <span class="current_speed">Em execução</span>
+    <div class="toolbox main_box tool4" tabindex="4">
+      <span><b class="current_status status_paused">PAUSADO</b></span>
       <span class="current_speed">Velocidade: 1x</span>
       <span class="current_time">0s</span>
-      <span class="time_status">PAUSAR</span>
-    </button>
-    <button class="toolbox tool5" onclick="openPopup()">
+      <span class="time_status">CONTINUAR</span>
+    </div>
+    <div class="toolbox box_constants tool5" tabindex="5">
       <span class="toolbox_button">Constantes</span>
-    </button>
-    <button class="toolbox tool6">
+    </div>
+    <div class="toolbox box_actions tool6" tabindex="6">
       <span class="toolbox_button">Ações</span>
-    </button>
-    <button class="toolbox tool7">
-      <button onclick="teste()">
-        criar
-      </button>
-      <button onclick="plotar()">
-        plotar
-      </button> -->
-      <!-- <span class="toolbox_button">Sair</span> -->
-    </button>
+    </div>
+    <div class="toolbox box_exit tool7" tabindex="7">
+      <span class="toolbox_button">Sair</span>
+    </div>
   </div>
   <script>
-    window.onload = () => {
+    $(document).ready(() => {
       generateChart()
       startShortcut()
+    })
+
+    const URL = new URLSearchParams(window.location.search)
+    const data = {
+      controllerID: null,
+      moment: 0,
+      status: 'paused',
+      currentStep: 1,
+      currentSpeedLevel: 1,
+      currentData: {
+        sp: 50,
+        pv: 50,
+        mv: 0
+      },
+      simulationData: {
+        sp: [URL.get('initSP') || 50],
+        pv: [URL.get('initSP') || 50],
+        mv: [0]
+      },
+      formData: {
+        controller_action: URL.get('controller_action'),
+        model_gain: parseFloat(URL.get('model_gain')) || 2.0,
+        model_tc: parseFloat(URL.get('model_tc')) || 15.0,
+        model_dt: parseFloat(URL.get('model_dt')) || 5.0,
+        model_bias: parseFloat(URL.get('model_bias')) || 50.0,
+        kp: parseFloat(URL.get('kp')) || 2.0,
+        ki: parseFloat(URL.get('ki')) || 0.0,
+        kd: parseFloat(URL.get('kd')) || 0.0,
+        initSP: parseFloat(URL.get('initSP')) || 50.0,
+        model_noise_min: parseFloat(URL.get('model_noise_min')) || 0.0,
+        model_noise_max: parseFloat(URL.get('model_noise_max')) || 0.0
+      }
     }
-    function openPopup() {
-      $(function() {
-        $('#dialog' ).dialog()
-      })
-      $('#dialog').dialog({
-        width: 500,
-        height: 500,
-        modal: true,
-        buttons: [{
-          text: 'example1',
-          class: 'btn btn-primary',
-          click: function() {
-            $(this).dialog('close')
-          }
-        }, {
-          text: 'example2',
-          class: 'btn btn-primary',
-          click: function() {
-            $(this).dialog('close')
-          }
-        }]
-  })
-}  </script>
+
+    const initController = async () => {
+      try {
+        const controllerID = await eel.initControler(data.formData)()
+        console.log(controllerID)
+      } catch (error) {
+        console.error(error)
+        alert('Erro ao iniciar o controlador. Verifique o console para mais informações.')
+      }
+    }
+
+    if(!IS_DEV) {
+      initController()
+    }
+
+    
+
+  </script>
 </body>
-<div id="dialog" title="Basic dialog" style="display: none;">
-  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the &apos;x&apos; icon.</p>
+
+<div id="popup_constants" style="display: none;">
+  <div>
+    <div class="mb-3 w-100">
+      <label for="kp" class="form-label">Valor de KP</label>
+      <input type="tel" class="form-control" name="kp" id="kp" value="2">
+      <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
+    </div>
+    <div class="mb-3 d-sm-inline-flex w-100">
+      <div class="w-50 me-2">
+        <label for="ki" class="form-label">Valor de Ki</label>
+        <input type="tel" class="form-control" name="ki" id="ki" value="5">
+        <div id="help2" class="form-text">Mínimo de 0 e máximo de 50.</div>
+      </div>
+      <div class="w-50 ms-2">
+        <label for="initialKd" class="form-label">Valor de Kd</label>
+        <input type="tel" class="form-control" name="kd" id="initialKd" value="50">
+        <div id="help3" class="form-text">Mínimo de 0 e máximo de 50.</div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100 mt-2 mb-1" tabindex="10">Salvar</button>
+  </div>
 </div>
+
+<div id="popup_commands" style="display: none;">
+  <p>Popup2</p>
+</div>
+
 </html>

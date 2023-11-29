@@ -55,7 +55,7 @@
       </div>
       <div class="mb-3 w-100">
         <label for="noise" class="form-label">Ruído do processo:</label>
-        <input type="text" id="noise" name="noise" tabindex="5"/>
+        <input type="text" id="noise" name="noise" tabindex="5" />
         <div id="help5" class="form-text">Ruído desabilitado</div>
       </div>
       <hr />
@@ -144,7 +144,7 @@
         data['model_noise_min'] = data['noise'].split(';')[0]
         data['model_noise_max'] = data['noise'].split(';')[1]
         delete data['noise']
-        console.log(data)
+        window.location.href = `../simul/simul.html?${$.param(data)}`
       })
     })
   </script>
