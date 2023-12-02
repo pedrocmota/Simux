@@ -7,7 +7,7 @@ import random
 
 class PID_Controller(object):
     def __init__(self):
-        self.Kp, self.Ki, self.Kd = 1, 0.1, 0
+        self.Kp, self.Ki, self.Kd = 0, 0, 0
         self.setpoint = 50
         self._min_output, self._max_output = 0, 100
         self._proportional = 0
@@ -20,10 +20,7 @@ class PID_Controller(object):
         self.reset()
 
     def __call__(self, PV=0, SP=0, direction="Direct"):
-        if direction == "Direct":
-            e = SP - PV
-        else:
-            e = PV - SP
+        e = SP - PV
         self._proportional = self.Kp * e
 
         if self._lastCV < 100 and self._lastCV > 0:
@@ -93,14 +90,14 @@ class PID_Controller(object):
             return lower
         return value
 
-    def setKP(self, value):
-        self.Kp = value
+    def setKp(self, newKp):
+        self.Kp = newKp
 
-    def setKI(self, value):
-        self.Ki = value
+    def setKi(self, newKi):
+        self.Ki = newKi
 
-    def setKD(self, value):
-        self.Kd = value
+    def setKd(self, newKd):
+        self.Kd = newKd
 
 
 class FOPDT_Model(object):
@@ -118,7 +115,7 @@ class FOPDT_Model(object):
             um = self.work_CV[-1]
         else:
             um = self.work_CV[int(ts - self.Dead_Time)]
-        dydt = (-(work_PV - self.Bias) + self.Gain * um) / self.Time_Constant
+        dydt = (-(work_PV) + self.Gain * um) / self.Time_Constant
         return dydt
 
     def update(self, work_PV, ts):
@@ -128,6 +125,7 @@ class FOPDT_Model(object):
 
 class Simulator:
     def __init__(self, params):
+        self.direction = params.get("controller_action")
         self.model_gain = params.get("model_gain")
         self.model_tc = params.get("model_tc")
         self.model_dt = params.get("model_dt")
@@ -136,9 +134,6 @@ class Simulator:
         self.model_noise_max = params.get("model_noise_max")
         self.initSP = params.get("initSP")
         self.newSP = self.initSP
-
-        if params.get("controller_action") == "Reverse":
-            self.model_gain *= -1
 
         self.kp = params.get("kp")
         self.ki = params.get("ki")
@@ -163,8 +158,6 @@ class Simulator:
 
         i = self.moment
 
-        self.direction = "Direct" if self.model_gain > 0 else "Reverse"
-
         self.process_model.change_params(
             (self.model_gain, self.model_tc, self.model_dt, self.model_bias)
         )
@@ -182,6 +175,7 @@ class Simulator:
             self.SP[i] = self.initSP
         else:
             self.SP[i] = self.newSP
+            
 
         self.CV[i] = self.pid(self.PV[i], self.SP[i], self.direction)
 
@@ -192,11 +186,13 @@ class Simulator:
         else:
             self.PV[i] = self.PV[i - 1] + self.noise[i]
 
+        mv_bias = (self.CV[i] + self.model_bias) if self.direction == 'Direct' else (self.CV[i] - self.model_bias)
+
         data = {
             "moment": self.moment,
             "SP": round(self.SP[i], 2),
             "PV": round(self.PV[i], 2),
-            "CV": round(self.CV[i], 2),
+            "CV": round(mv_bias, 2),
         }
 
         self.moment += 1
@@ -206,14 +202,14 @@ class Simulator:
     def setSP(self, value):
         self.newSP = value
 
-    def setKP(self, value):
+    def setKp(self, value):
         self.kp = value
-        self.pid.setKP(self.kp)
+        self.pid.setKp(self.kp)
 
-    def setKI(self, value):
+    def setKi(self, value):
         self.ki = value
-        self.pid.setKI(self.ki)
+        self.pid.setKi(self.ki)
 
-    def setKD(self, value):
+    def setKd(self, value):
         self.kd = value
-        self.pid.setKD(self.kd)
+        self.pid.setKd(self.kd)

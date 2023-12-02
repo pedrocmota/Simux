@@ -19,6 +19,11 @@ def initControler(controllerData):
 
 
 @eel.expose
+def destroyController(controllerID):
+    controllersArray.pop(controllerID)
+
+
+@eel.expose
 def getControllerData(controllerID):
     return controllersArray[controllerID].get()
 
@@ -29,18 +34,18 @@ def setSP(controllerID, newSP):
 
 
 @eel.expose
-def setKP(controllerID, newKP):
-    return controllersArray[controllerID].setKP(newKP)
+def setKp(controllerID, newKP):
+    return controllersArray[controllerID].setKp(newKP)
 
 
 @eel.expose
-def setKI(controllerID, newKI):
-    return controllersArray[controllerID].setKI(newKI)
+def setKi(controllerID, newKI):
+    return controllersArray[controllerID].setKi(newKI)
 
 
 @eel.expose
-def setKD(controllerID, newKD):
-    return controllersArray[controllerID].setKD(newKD)
+def setKd(controllerID, newKD):
+    return controllersArray[controllerID].setKd(newKD)
 
 
 if __name__ == "__main__":

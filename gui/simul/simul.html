@@ -10,16 +10,17 @@
   <link rel="stylesheet" type="text/css" href="../statics/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="../statics/jquery-ui.css">
   <link rel="stylesheet" type="text/css" href="../statics/jquery.toast.css">
-  <script src="./chart.js"></script>
-  <script src="./shorcuts.js"></script>
-  <script src="./popups.js"></script>
-  <script src="./actions.js"></script>
-  <script src="./toolbox.js"></script>
-  <script src="../statics/jquery.js"></script>
-  <script src="../statics/jquery-ui.js"></script>
-  <script src="../statics/bootstrap.js"></script>
-  <script src="../statics/chart.js"></script>
-  <script src="../statics/jquery.toast.js"></script>
+  <script type="text/javascript" src="./chart.js"></script>
+  <script type="text/javascript" src="./shorcuts.js"></script>
+  <script type="text/javascript" src="./popups.js"></script>
+  <script type="text/javascript" src="./actions.js"></script>
+  <script type="text/javascript" src="./utils.js"></script>
+  <script type="text/javascript" src="../statics/jquery.js"></script>
+  <script type="text/javascript" src="../statics/jquery-ui.js"></script>
+  <script type="text/javascript" src="../statics/bootstrap.js"></script>
+  <script type="text/javascript" src="../statics/chart.js"></script>
+  <script type="text/javascript" src="../statics/jquery.mask.js"></script>
+  <script type="text/javascript" src="../statics/jquery.toast.js"></script>
   <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,15 +40,15 @@
   <div class="toolbar">
     <div class="toolbox sp_box tool1" tabindex="1">
       <span class="toolbox_value_title">SP</span>
-      <input class="sp_input" value="50%" disabled />
+      <input class="sp_input" value="0%" disabled />
     </div>
     <div class="toolbox pv_box tool2" tabindex="2">
       <span class="toolbox_value_title">PV</span>
-      <span class="toolbox_value">0%</span>
+      <span class="toolbox_value pv_value">0%</span>
     </div>
     <div class="toolbox mv_box tool3" tabindex="3">
       <span class="toolbox_value_title">MV</span>
-      <span class="toolbox_value">0%</span>
+      <span class="toolbox_value mv_value">0%</span>
     </div>
     <div class="toolbox main_box tool4" tabindex="4">
       <span><b class="current_status status_paused">PAUSADO</b></span>
@@ -69,6 +70,7 @@
     $(document).ready(() => {
       generateChart()
       startShortcut()
+      initPopups()
     })
 
     const URL = new URLSearchParams(window.location.search)
@@ -90,35 +92,36 @@
       },
       formData: {
         controller_action: URL.get('controller_action'),
-        model_gain: parseFloat(URL.get('model_gain')) || 2.0,
-        model_tc: parseFloat(URL.get('model_tc')) || 15.0,
-        model_dt: parseFloat(URL.get('model_dt')) || 5.0,
-        model_bias: parseFloat(URL.get('model_bias')) || 50.0,
-        kp: parseFloat(URL.get('kp')) || 2.0,
-        ki: parseFloat(URL.get('ki')) || 0.0,
-        kd: parseFloat(URL.get('kd')) || 0.0,
-        initSP: parseFloat(URL.get('initSP')) || 50.0,
-        model_noise_min: parseFloat(URL.get('model_noise_min')) || 0.0,
-        model_noise_max: parseFloat(URL.get('model_noise_max')) || 0.0
+        model_gain: parseFloat(URL.get('model_gain')) || 2,
+        model_tc: parseFloat(URL.get('model_tc')) || 20,
+        model_dt: parseFloat(URL.get('model_dt')) || 5,
+        model_bias: parseFloat(URL.get('model_bias')) || 50,
+        kp: parseFloat(URL.get('kp')) || 2,
+        ki: parseFloat(URL.get('ki')) || 0,
+        kd: parseFloat(URL.get('kd')) || 0,
+        initSP: parseFloat(URL.get('initSP')) || 50,
+        model_noise_min: parseFloat(URL.get('model_noise_min')) || 0,
+        model_noise_max: parseFloat(URL.get('model_noise_max')) || 0
       }
     }
 
     const initController = async () => {
       try {
         const controllerID = await eel.initControler(data.formData)()
-        console.log(controllerID)
+        data.controllerID = controllerID
       } catch (error) {
         console.error(error)
         alert('Erro ao iniciar o controlador. Verifique o console para mais informações.')
       }
     }
 
-    if(!IS_DEV) {
+    if (!IS_DEV) {
       initController()
     }
 
-    
-
+    $('.sp_input').val(data.formData.initSP + '%')
+    $('.pv_value').text('0%')
+    $('.mv_value').text('0%')
   </script>
 </body>
 
@@ -126,27 +129,189 @@
   <div>
     <div class="mb-3 w-100">
       <label for="kp" class="form-label">Valor de KP</label>
-      <input type="tel" class="form-control" name="kp" id="kp" value="2">
+      <input type="tel" class="form-control" name="kp" id="kp">
       <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
     </div>
     <div class="mb-3 d-sm-inline-flex w-100">
       <div class="w-50 me-2">
         <label for="ki" class="form-label">Valor de Ki</label>
-        <input type="tel" class="form-control" name="ki" id="ki" value="5">
-        <div id="help2" class="form-text">Mínimo de 0 e máximo de 50.</div>
+        <input type="tel" class="form-control" name="ki" id="ki">
+        <div id="help2" class="form-text">Mínimo de 0 e máximo de 30.</div>
       </div>
       <div class="w-50 ms-2">
         <label for="initialKd" class="form-label">Valor de Kd</label>
-        <input type="tel" class="form-control" name="kd" id="initialKd" value="50">
-        <div id="help3" class="form-text">Mínimo de 0 e máximo de 50.</div>
+        <input type="tel" class="form-control" name="kd" id="kd">
+        <div id="help3" class="form-text">Mínimo de 0 e máximo de 30.</div>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary w-100 mt-2 mb-1" tabindex="10">Salvar</button>
+    <p>
+      <a class="showProcess" data-bs-toggle="collapse" href="#processConstants" role="button" aria-expanded="false" aria-controls="processConstants">
+        Visualizar constantes do processo
+      </a>
+    </p>
+    <div class="collapse" id="processConstants">
+      <div class="card card-body">
+        <table>
+          <tbody>
+            <tr>
+              <td class="processConstantName">Ganho do processo: </td>
+              <td id="model_gain"></td>
+            </tr>
+            <tr>
+              <td class="processConstantName">Constante de tempo: </td>
+              <td id="model_tc"></td>
+            </tr>
+            <tr>
+              <td class="processConstantName">Tempo morto: </td>
+              <td id="model_dt"></td>
+            </tr>
+            <tr>
+              <td class="processConstantName">Bias: </td>
+              <td id="model_bias"></td>
+            </tr>
+            <tr>
+              <td class="processConstantName">Ruído mínimo: </td>
+              <td id="model_noise_min"></td>
+            </tr>
+            <tr>
+              <td class="processConstantName">Ruído máximo: </td>
+              <td id="model_noise_max"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <button id="save_constants" class="btn btn-primary w-100 mt-2 mb-1">Salvar</button>
   </div>
 </div>
 
 <div id="popup_commands" style="display: none;">
-  <p>Popup2</p>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title h5">Controle de velocidade</h5>
+      <a href="#" class="card-link text-light">Aumentar</a>
+      <a href="#" class="card-link text-light">Diminuir</a>
+    </div>
+  </div>
+  <div class="card mt-2">
+    <div class="card-body">
+      <h5 class="card-title h5">Simulação futura</h5>
+      <div class="mb-3 w-100">
+        <div class="d-inline-flex mt-2" style="height: 34px;">
+          <input type="tel" class="form-control" name="simulation" id="simulation_input" placeholder="Simular até (s)" style="width: calc(100% - 85px)">
+          <button class="btn btn-dark btn_simulation" style="width: 85px;" onclick="plotar()">
+            Simular
+          </button>
+        </div>
+        <div class="form-text mt-2" style="font-size: 13px;">Máximo de 1800 segundos (30 minutos)</div>
+      </div>
+    </div>
+  </div>
+  <div class="card mt-2">
+    <div class="card-body">
+      <h5 class="card-title h5">Mudar escala</h5>
+      <div class="list-group">
+        <a href="#" id="scale-1" class="list-group-item list-group-item-action scales active text-light" onclick="setScale(1)">0s - 300s</a>
+        <a href="#" id="scale-2" class="list-group-item list-group-item-action scales text-light" onclick="setScale(2)">300s - 600s</a>
+        <a href="#" id="scale-3" class="list-group-item list-group-item-action scales text-light" onclick="setScale(3)">600s - 900s</a>
+        <a href="#" id="scale-4" class="list-group-item list-group-item-action scales text-light" onclick="setScale(4)">900s - 1200s</a>
+        <a href="#" id="scale-5" class="list-group-item list-group-item-action scales text-light" onclick="setScale(5)">1200s - 1500s</a>
+        <a href="#" id="scale-6" class="list-group-item list-group-item-action scales text-light" onclick="setScale(6)">1500s - 1800s</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="popup_shortcuts" style="display: none;">
+  <table class="shorcuts_table">
+    <tbody>
+      <tr>
+        <td class="shortcut_name">Move o foco para esquerda</td>
+        <td class="shortcut_key">
+          <div class="shortcut">←</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Move o foco para direita</td>
+        <td class="shortcut_key">
+          <div class="shortcut">→</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Move o foco para o próximo</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Tab</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Foca na caixa de ferramentas</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Alt</div>
+          <div class="shortcut">C</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Foca na caixa de constantes</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Alt</div>
+          <div class="shortcut">K</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Foca na caixa de ações</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Alt</div>
+          <div class="shortcut">A</div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <hr />
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Pausa a simulação</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Espaço</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Aumenta a velocidade da simulação</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Alt</div>
+          <div class="shortcut">+</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Diminui a velocidade da simulação</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Alt</div>
+          <div class="shortcut">-</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Passa a próxima escala</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Alt</div>
+          <div class="shortcut">→</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Volta a escala anterior</td>
+        <td class="shortcut_key">
+          <div class="shortcut">Alt</div>
+          <div class="shortcut">←</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="dialog-confirm" title="Deseja realmente sair?" style="display: none;">
+  <p>
+    <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
+    A simulação será encerrada e todos os dados serão perdidos.
+  </p>
 </div>
 
 </html>

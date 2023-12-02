@@ -1,7 +1,8 @@
+let focusEl = 4
+
 const startShortcut = () => {
   // MUDANÇA DE FOCO ENTRE AS TOOLBOXES
   // 
-  let focusEl = 4
   $('body').keydown((e) => {
     const key = e.which
     if (key === 37) {//ESQUERDA
@@ -23,7 +24,7 @@ const startShortcut = () => {
   $('.main_box').focus()
 
   // AÇÃO PAUSAR/CONTINUAR
-  $('.sp_input').keypress(function (e) {
+  $('.sp_input').keypress((e) => {
     if (String.fromCharCode(e.keyCode).match(/[^0-9]/g)) return false
   })
 
@@ -66,24 +67,14 @@ const startShortcut = () => {
       data.currentData.sp = sp
       $('.sp_input').val(`${data.currentData.sp}%`)
 
-      $.toast({
-        text: 'Set Point atualizado',
-        bgColor: '#444444',
-        textColor: '#eeeeee',
-        showHideTransition: 'fade',
-        allowToastClose: true,
-        hideAfter: 2000,
-        stack: 5,
-        position: 'top-right',
-  
-  
-        textAlign: 'left',
-        loader: false
-      })
+      generateToast(`Setpoint alterado para ${data.currentData.sp}%`)
+
+      setSP(data.currentData.sp)
 
       action_setpoint_cancel()
     }
   }
+  $('.sp_box').on('dblclick', action_setpoint)
   $('.sp_box').on('keydown', (e) => {
     if (e.which === 13) {
       action_setpoint()
@@ -102,6 +93,34 @@ const startShortcut = () => {
       if (sp_selecting) {
         action_setpoint_cancel()
       }
+    }
+  })
+
+  // AÇÃO ABERTA POPUP DE CONSTANTES
+  $('.box_constants').on('click', openPopupConstants)
+  $('.box_constants').on('keypress', (e) => {if (e.which === 13) {openPopupConstants()} })
+
+  // AÇÃO ABERTA POPUP DE COMANDOS
+  $('.box_actions').on('click', openPopupActions)
+  $('.box_actions').on('keypress', (e) => {if (e.which === 13) {openPopupActions()} })
+
+  // AÇÃO SAIR
+  $('.box_exit').on('click', openPopupExit)
+  $('.box_exit').on('keypress', (e) => {if (e.which === 13) {openPopupExit()} })
+
+  // ATALHO FOCO NO TOOLBAR
+  $(document).keydown((e) => {
+    if (e.altKey && e.key === 'c') {
+      $('.main_box').focus()
+      focusEl = 4
+    }
+    if (e.altKey && e.key === 'k') {
+      $('#kp').focus()
+    }
+    if (e.altKey && e.key === 'a') {
+    }
+    if (e.altKey && e.key === '/') {
+      openPopupShortcuts()
     }
   })
 }

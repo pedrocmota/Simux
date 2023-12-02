@@ -5,8 +5,8 @@
   <title>Simux | Página inicial</title>
   <link rel="stylesheet" type="text/css" href="./global.css">
   <link rel="stylesheet" type="text/css" href="./statics/bootstrap.css">
-  <script src="./statics/jquery.js"></script>
-  <script src="./statics/bootstrap.js"></script>
+  <script type="text/javascript" src="./statics/jquery.js"></script>
+  <script type="text/javascript" src="./statics/bootstrap.js"></script>
   <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,6 +27,14 @@
       em <a href="https://github.com/pedrocmota/simux" target="_blank">https://github.com/pedrocmota/simux</a>
     </div>
   </div>
+  <style>
+    @media screen and (max-height: 736px) {
+      img {
+        width: 350px;
+        height: 350px;
+      }
+    }
+  </style>
   <script>
     window.resizeTo(1366 + 50, 768 + 50)
     $(document).ready(() => {

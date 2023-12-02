@@ -5,18 +5,28 @@
 
 .chartContainer {
   width: 100%;
-  height: 700px;
+  height: 820px;
 }
 
 .toolbar {
   width: 100%;
-  height: calc(100% - 730px);
+  height: calc(100% - 850px);
   padding: 15px;
   padding-left: 30px;
   padding-right: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media screen and (max-height: 1040px) {
+  .chartContainer {
+    height: 700px;
+  }
+
+  .toolbar {
+    height: calc(100% - 730px);
+  }
 }
 
 @media screen and (max-height: 910px) {
@@ -41,12 +51,6 @@
 
 /*  */
 
-.ui-widget-overlay {
-  user-select: none;
-  pointer-events: none;
-  background-color: transparent !important;
-}
-
 .ui-dialog {
   background-color: #2d3748 !important;
   color: white !important;
@@ -64,5 +68,16 @@
 }
 
 .ui-dialog-titlebar-close {
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none !important;
+  background-color: transparent;
+}
+
+.ui-dialog-titlebar-close:after {
+  content: "x";
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
 }

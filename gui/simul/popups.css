@@ -1,0 +1,81 @@
+.jq-toast-single {
+  font-size: 18px !important;
+}
+
+.ui-widget-overlay {
+  display: none !important;
+}
+
+#popup_shortcuts {
+  overflow-y: scroll !important;
+}
+
+.shorcuts_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.shorcuts_table tbody {
+  padding: 5px;
+}
+
+.shortcut_key {
+  display: inline-flex;
+  padding-top: 10px;
+}
+
+.shortcut {
+  width: fit-content;
+  height: 25px;
+  border-top: 1px solid #4a4f58;
+  border-right: 1px solid #4a4f58;
+  border-bottom: 3px solid #4a4f58;
+  border-left: 1px solid #4a4f58;
+  border-radius: 0.375rem;
+  background-color: #272d38;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.shorcuts_table tr {
+  height: 25px;
+}
+
+.showProcess {
+  color: white !important;
+}
+
+.speed_control {
+  width: 100%;
+  display: inline-flex;
+}
+
+.speed_control button {
+  font-size: 17px !important;
+  width: 50% !important;
+}
+
+#simulation_input,
+#simulation_input::placeholder {
+  font-size: 13px;
+  border-top-right-radius: 0% !important;
+  border-bottom-right-radius: 0% !important;
+}
+
+.btn_simulation {
+  border-top-left-radius: 0% !important;
+  border-bottom-left-radius: 0% !important;
+}
+
+.scale-button {
+  cursor: pointer;
+}
+
+.scale-button:hover {
+  background-color: #4a4f58;
+}

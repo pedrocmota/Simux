@@ -37,7 +37,7 @@
         </div>
         <div class="w-50 ms-2">
           <label for="timeConstant" class="form-label">Constante de tempo (s)</label>
-          <input type="tel" class="form-control" name="model_tc" id="timeConstant" value="15" tabindex="2">
+          <input type="tel" class="form-control" name="model_tc" id="timeConstant" value="20" tabindex="2">
           <div id="help2" class="form-text">Mínimo de 1 e máximo de 100.</div>
         </div>
       </div>
@@ -49,8 +49,8 @@
         </div>
         <div class="w-50 ms-2">
           <label for="bias" class="form-label">Bias (%)</label>
-          <input type="tel" class="form-control" name="model_bias" id="bias" value="50" tabindex="4">
-          <div id="help4" class="form-text">Mínimo de 0 e máximo de 100.</div>
+          <input type="tel" class="form-control" name="model_bias" id="bias" value="20" tabindex="4">
+          <div id="help4" class="form-text">Mínimo de 0 e máximo de 60.</div>
         </div>
       </div>
       <div class="mb-3 w-100">
@@ -67,13 +67,13 @@
       <div class="mb-3 d-sm-inline-flex w-100">
         <div class="w-50 me-2">
           <label for="initialKi" class="form-label">Valor inicial do Ki</label>
-          <input type="tel" class="form-control" name="ki" id="initialKi" value="5" tabindex="7">
-          <div id="help8" class="form-text">Mínimo de 0 e máximo de 50.</div>
+          <input type="tel" class="form-control" name="ki" id="initialKi" value="0" tabindex="7">
+          <div id="help8" class="form-text">Mínimo de 0 e máximo de 30.</div>
         </div>
         <div class="w-50 ms-2">
           <label for="initialKd" class="form-label">Valor inicial do Kd</label>
-          <input type="tel" class="form-control" name="kd" id="initialKd" value="50" tabindex="8">
-          <div id="help9" class="form-text">Mínimo de 0 e máximo de 50.</div>
+          <input type="tel" class="form-control" name="kd" id="initialKd" value="0" tabindex="8">
+          <div id="help9" class="form-text">Mínimo de 0 e máximo de 30.</div>
         </div>
       </div>
       <div class="mb-3 w-100">
@@ -88,29 +88,32 @@
     $(document).ready(() => {
       $('#processGain').inputmask('numeric', {
         min: 0.1,
-        max: 5
+        max: 5,
+        clearMaskOnLostFocus: false
       })
       $('#timeConstant').inputmask('numeric', {
         min: 1,
-        max: 100
+        max: 100,
+        clearMaskOnLostFocus: false
       })
       $('#deathTime').inputmask('numeric', {
         min: 1,
-        max: 20
+        max: 20,
+        clearMaskOnLostFocus: false
       })
       $('#bias').inputmask('numeric', {
         min: 0,
-        max: 100
+        max: 60
       })
       $('#noise').ionRangeSlider({
         type: 'double',
         min: 0,
-        max: 1.25,
-        step: 0.1,
+        max: 1,
+        step: 0.010,
         from: 0,
-        to: 0.1,
+        to: 0.0,
         grid: false,
-        onChange: function (data) {
+        onChange: (data) => {
           if (data.from == 0 && data.to == 0) {
             $('#help5').text('Ruído desabilitado')
           } else {
@@ -120,19 +123,23 @@
       })
       $('#initialKp').inputmask('numeric', {
         min: 0.1,
-        max: 5
+        max: 5,
+        clearMaskOnLostFocus: false
       })
       $('#initialKi').inputmask('numeric', {
         min: 0,
-        max: 50
+        max: 30,
+        clearMaskOnLostFocus: false
       })
       $('#initialKd').inputmask('numeric', {
         min: 0,
-        max: 50
+        max: 30,
+        clearMaskOnLostFocus: false
       })
       $('#initialSP').inputmask('numeric', {
         min: 5,
-        max: 90
+        max: 90,
+        clearMaskOnLostFocus: false
       })
 
       $('form').submit((e) => {
