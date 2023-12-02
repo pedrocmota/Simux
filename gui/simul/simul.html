@@ -22,6 +22,7 @@
   <script type="text/javascript" src="../statics/jquery.mask.js"></script>
   <script type="text/javascript" src="../statics/jquery.toast.js"></script>
   <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
+  <script type="text/javascript" src="../statics/replace_eel.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="../statics/favicon.svg">
@@ -77,6 +78,7 @@
     const data = {
       controllerID: null,
       moment: 0,
+      finished: false,
       status: 'paused',
       currentStep: 1,
       currentSpeedLevel: 1,

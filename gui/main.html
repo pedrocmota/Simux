@@ -8,6 +8,7 @@
   <script type="text/javascript" src="./statics/jquery.js"></script>
   <script type="text/javascript" src="./statics/bootstrap.js"></script>
   <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
+  <script type="text/javascript" src="./statics/replace_eel.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="./statics/favicon.svg">
@@ -36,7 +37,7 @@
     }
   </style>
   <script>
-    window.resizeTo(1366 + 50, 768 + 50)
+    // window.resizeTo(1366 + 50, 768 + 50)
     $(document).ready(() => {
       const version = new URLSearchParams(window.location.search).get('version')
       $('#version').text(version)
