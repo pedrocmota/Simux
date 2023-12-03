@@ -120,6 +120,10 @@
       initController()
     }
 
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
+
     $('.sp_input').val(data.formData.initSP + '%')
     $('.pv_value').text('0%')
     $('.mv_value').text('0%')

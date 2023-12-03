@@ -22,9 +22,9 @@ Esperamos que o Simux seja uma ferramenta valiosa para a comunidade de automaç�
 
 ## Como Baixar
 
-Para baixar o Simux, vá até a aba "Release" à direita da tela e selecione a versão mais recente.
+Para baxar o Simux, vá até a aba "Release" à direita da tela e selecione a versão mais recente.
 
-## Quais os recursos que esse simulador fornece?
+## Quais os recursos que esse simulador fornece?
 
 - Simulação em ação direita ou reversa;
   

@@ -47,7 +47,7 @@ const generateChart = () => {
         <p style="font-size: 16px">Valor da VP: <b>${values.entries[1].dataPoint.y}</b>%</p>
         <p style="font-size: 16px">Valor da MV: <b>${values.entries[2].dataPoint.y}</b>%</p>
         <hr/>
-        <p style="font-size: 16px">Desvio: <b>${(values.entries[1].dataPoint.y - values.entries[0].dataPoint.y).toFixed(1)}</b>%</p>
+        <p style="font-size: 16px">Desvio: <b>${(values.entries[1].dataPoint.y - values.entries[0].dataPoint.y).toFixed(1).replace('-0', '0')}</b>%</p>
         </div>
         `,
       shared: true,

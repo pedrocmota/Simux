@@ -154,6 +154,10 @@
         delete data['noise']
         window.location.href = `../simul/simul.html?${$.param(data)}`
       })
+
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+      })
     })
   </script>
 </body>
