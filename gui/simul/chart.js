@@ -1,7 +1,7 @@
 var chart = null
 var spData = [{}]
 var pvData = [{}]
-var cvData = [{}]
+var mvData = [{}]
 
 const generateChart = () => {
   chart = new CanvasJS.Chart('chartContainer', {
@@ -76,7 +76,7 @@ const generateChart = () => {
       color: '#9bbb58',
       name: 'MV - Variável manipulada',
       showInLegend: true,
-      dataPoints: cvData,
+      dataPoints: mvData,
       markerSize: 0
     }]
   })

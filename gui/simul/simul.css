@@ -58,7 +58,7 @@
   border: 1px solid #575863 !important;
 }
 
-.ui-dialog > * {
+.ui-dialog>* {
   color: white !important;
 }
 

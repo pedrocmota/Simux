@@ -9,23 +9,34 @@ const toggleStatus = () => {
 }
 
 const pause = () => {
-  $('.current_status').text('PAUSADO')
-  $('.time_status').text('CONTINUAR')
-  $('.current_status').removeClass('status_running')
-  $('.current_status').addClass('status_paused')
-  data.status = 'paused'
-  clearInterval(intervalId)
+  if (data.status !== 'finished') {
+    $('.current_status').text('PAUSADO')
+    $('.time_status').text('CONTINUAR')
+    $('.current_status').removeClass('status_running')
+    $('.current_status').addClass('status_paused')
+    data.status = 'paused'
+    clearInterval(intervalId)
+  }
 }
 
 const resume = () => {
-  if (data.moment < 1800) {
+  if (data.status !== 'finished') {
     $('.current_status').text('EXECUTANDO')
     $('.time_status').text('PAUSAR')
     $('.current_status').removeClass('status_paused')
     $('.current_status').addClass('status_running')
     data.status = 'running'
-    intervalId = setInterval(pulseController, 1000 / data.currentSpeedLevel)
+    intervalId = setInterval(pulseController, 1000 / data.currentSpeed)
   }
+}
+
+const finish = () => {
+  $('.current_status').text('FINALIZADO')
+  $('.time_status').text('')
+  $('.current_status').removeClass('status_paused status_running')
+  $('.current_status').addClass('status_finished')
+  data.status = 'finished'
+  clearInterval(intervalId)
 }
 
 const setScale = (scaleNumber) => {
@@ -34,40 +45,64 @@ const setScale = (scaleNumber) => {
   if (scaleNumber === 1) {
     chart.options.axisX.minimum = 0
     chart.options.axisX.maximum = 300
+    data.currentScale = 1
     chart.render()
   }
   if (scaleNumber === 2) {
     chart.options.axisX.minimum = 300
     chart.options.axisX.maximum = 600
+    data.currentScale = 2
     chart.render()
   }
   if (scaleNumber === 3) {
     chart.options.axisX.minimum = 600
     chart.options.axisX.maximum = 900
+    data.currentScale = 3
     chart.render()
   }
   if (scaleNumber === 4) {
     chart.options.axisX.minimum = 900
     chart.options.axisX.maximum = 1200
+    data.currentScale = 4
     chart.render()
   }
   if (scaleNumber === 5) {
     chart.options.axisX.minimum = 1200
     chart.options.axisX.maximum = 1500
+    data.currentScale = 5
     chart.render()
   }
   if (scaleNumber === 6) {
     chart.options.axisX.minimum = 1500
     chart.options.axisX.maximum = 1800
+    data.currentScale = 6
     chart.render()
   }
 }
 
 const setSpeed = (speed) => {
-  clearInterval(intervalId)
-  data.currentSpeedLevel = speed
-  if (data.status === 'running') {
-    intervalId = setInterval(pulseController, 1000 / data.currentSpeedLevel)
+  if (data.status !== 'finished') {
+    $('.current_speed').text(`Velocidade: ${speed}x`)
+    data.currentSpeed = speed
+    generateToast(`Velocidade alterada para ${data.currentSpeed}x`)
+
+    if (data.currentSpeed === 3) {
+      $('.speed_up').prop('disabled', true)
+    }
+    if (data.currentSpeed === 1) {
+      $('.speed_down').prop('disabled', true)
+    }
+    if (data.currentSpeed !== 3) {
+      $('.speed_up').prop('disabled', false)
+    }
+    if (data.currentSpeed !== 1) {
+      $('.speed_down').prop('disabled', false)
+    }
+
+    clearInterval(intervalId)
+    if (data.status === 'running') {
+      intervalId = setInterval(pulseController, 1000 / data.currentSpeed)
+    }
   }
 }
 
@@ -98,17 +133,20 @@ const setKd = async (newKd) => {
   }
 }
 
-const pulseController = async () => {
+const pulseController = async (disableRender = false) => {
   if (!IS_DEV) {
+    if (data.moment === 1800) {
+      return finish()
+    }
     let vt = await eel.getControllerData(data.controllerID)()
     data.moment = vt['moment']
     data.currentData.sp = vt['SP']
     data.currentData.pv = vt['PV']
-    data.currentData.cv = vt['CV']
+    data.currentData.mv = vt['MV']
     if (data.moment === 0) {
       spData = []
       pvData = []
-      cvData = []
+      mvData = []
       chart.toolTip.set('enabled', true)
     }
 
@@ -136,50 +174,35 @@ const pulseController = async () => {
       x: data.moment,
       y: data.currentData.pv
     })
-    cvData.push({
+    mvData.push({
       x: data.moment,
-      y: data.currentData.cv
+      y: data.currentData.mv
     })
-    chart.options.data[0].dataPoints = spData
-    chart.options.data[1].dataPoints = pvData
-    chart.options.data[2].dataPoints = cvData
-    chart.render()
 
-    $('.current_time').text(`${data.moment}s`)
-    $('.pv_value').text(`${data.currentData.pv}%`)
-    $('.mv_value').text(`${data.currentData.cv}%`)
+    if (!disableRender) {
+      pulseRender()
+    }
   }
-
 }
 
-const simulateUntil = async (max) => {
-  const dataSP = []
-  const dataPV = []
-  const dataMV = []
-  chart.toolTip.set('enabled', true)
-  for (let i = data.moment; i <= max; i++) {
-    let vt = await eel.getControllerData(data.controllerID)()
-    dataSP.push({
-      x: i,
-      y: vt['SP']
-    })
-    dataPV.push({
-      x: i,
-      y: vt['PV']
-    })
-    dataMV.push({
-      x: i,
-      y: vt['CV']
-    })
-    if (i === 10) {
-      await eel.setSP(0, 80)()
-    }
-    if (i === 180) {
-      await eel.setSP(0, 70)()
-    }
-    chart.options.data[0].dataPoints = dataSP
-    chart.options.data[1].dataPoints = dataPV
-    chart.options.data[2].dataPoints = dataMV
-  }
+const pulseRender = () => {
+  chart.options.data[0].dataPoints = spData
+  chart.options.data[1].dataPoints = pvData
+  chart.options.data[2].dataPoints = mvData
   chart.render()
+
+  $('.current_time').text(`${data.moment}s`)
+  $('.pv_value').text(`${data.currentData.pv}%`)
+  $('.mv_value').text(`${data.currentData.mv}%`)
+}
+
+const simulateUntil = async () => {
+  const max = parseInt($('#simulation_input').val())
+  if (max <= data.moment) {
+    return generateToast('Esse momento já foi simulado')
+  }
+  for (i = data.moment; i <= max; i++) {
+    await pulseController(true)
+  }
+  pulseRender()
 }

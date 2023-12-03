@@ -79,3 +79,8 @@
 .scale-button:hover {
   background-color: #4a4f58;
 }
+
+.speed-control:disabled {
+  cursor: not-allowed;
+  color: gray;
+}

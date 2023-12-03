@@ -44,6 +44,10 @@
   color: #9bbb59;
 }
 
+.status_finished {
+  color: #4d4fc0;
+}
+
 .current_time {
   font-size: 50px;
 }

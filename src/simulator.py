@@ -15,7 +15,7 @@ class PID_Controller(object):
         self._derivative = 0
         self.output_limits = (0, 100)
         self._last_eD = 0
-        self._lastCV = 0
+        self._lastMV = 0
         self._d_init = 0
         self.reset()
 
@@ -23,12 +23,12 @@ class PID_Controller(object):
         e = SP - PV
         self._proportional = self.Kp * e
 
-        if self._lastCV < 100 and self._lastCV > 0:
+        if self._lastMV < 100 and self._lastMV > 0:
             self._integral += self.Ki * e
 
-        if self.Kp == 0 and self._lastCV == 100 and self.Ki * e < 0:
+        if self.Kp == 0 and self._lastMV == 100 and self.Ki * e < 0:
             self._integral += self.Ki * e
-        if self.Kp == 0 and self._lastCV == 0 and self.Ki * e > 0:
+        if self.Kp == 0 and self._lastMV == 0 and self.Ki * e > 0:
             self._integral += self.Ki * e
 
         eD = -PV
@@ -38,12 +38,12 @@ class PID_Controller(object):
             self._derivative = 0
             self._d_init = 1
 
-        CV = self._proportional + self._integral + self._derivative
-        CV = self._clamp(CV, self.output_limits)
+        MV = self._proportional + self._integral + self._derivative
+        MV = self._clamp(MV, self.output_limits)
 
         self._last_eD = eD
-        self._lastCV = CV
-        return CV
+        self._lastMV = MV
+        return MV
 
     @property
     def components(self):
@@ -78,7 +78,7 @@ class PID_Controller(object):
         self._integral = self._clamp(self._integral, self.output_limits)
         self._last_eD = 0
         self._d_init = 0
-        self._lastCV = 0
+        self._lastMV = 0
 
     def _clamp(self, value, limits):
         lower, upper = limits
@@ -103,7 +103,7 @@ class PID_Controller(object):
 class FOPDT_Model(object):
     # Modelo: First Order Plus Dead Time (FOPDT)
     def __init__(self):
-        self.work_CV = []
+        self.work_MV = []
 
     def change_params(self, data):
         self.Gain, self.Time_Constant, self.Dead_Time, self.Bias = data
@@ -111,10 +111,10 @@ class FOPDT_Model(object):
     def _calc(self, work_PV, ts):
         if (ts - self.Dead_Time) <= 0:
             um = 0
-        elif int(ts - self.Dead_Time) >= len(self.work_CV):
-            um = self.work_CV[-1]
+        elif int(ts - self.Dead_Time) >= len(self.work_MV):
+            um = self.work_MV[-1]
         else:
-            um = self.work_CV[int(ts - self.Dead_Time)]
+            um = self.work_MV[int(ts - self.Dead_Time)]
         dydt = (-(work_PV) + self.Gain * um) / self.Time_Constant
         return dydt
 
@@ -152,7 +152,7 @@ class Simulator:
 
         self.SP = np.zeros(self.maxsize)
         self.PV = np.zeros(self.maxsize)
-        self.CV = np.zeros(self.maxsize)
+        self.MV = np.zeros(self.maxsize)
 
         self.moment = 0
 
@@ -161,7 +161,7 @@ class Simulator:
         self.process_model.change_params(
             (self.model_gain, self.model_tc, self.model_dt, self.model_bias)
         )
-        self.process_model.work_CV = self.CV
+        self.process_model.work_MV = self.MV
 
         self.pid.tunings = (self.kp, self.ki, self.kd)
         self.pid.reset()
@@ -175,9 +175,8 @@ class Simulator:
             self.SP[i] = self.initSP
         else:
             self.SP[i] = self.newSP
-            
 
-        self.CV[i] = self.pid(self.PV[i], self.SP[i], self.direction)
+        self.MV[i] = self.pid(self.PV[i], self.SP[i], self.direction)
 
         if i < (self.maxsize - 1):
             self.PV[i + 1] = (
@@ -186,13 +185,17 @@ class Simulator:
         else:
             self.PV[i] = self.PV[i - 1] + self.noise[i]
 
-        mv_bias = (self.CV[i] + self.model_bias) if self.direction == 'Direct' else (self.CV[i] - self.model_bias)
+        mv_bias = (
+            (self.MV[i] + self.model_bias)
+            if self.direction == "Direct"
+            else (self.MV[i] - self.model_bias)
+        )
 
         data = {
             "moment": self.moment,
             "SP": round(self.SP[i], 2),
             "PV": round(self.PV[i], 2),
-            "CV": round(mv_bias, 2),
+            "MV": round(mv_bias, 2),
         }
 
         self.moment += 1

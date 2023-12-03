@@ -51,6 +51,7 @@ const initPopups = () => {
       generateToast(`Kd alterado para ${kd}`)
     }
   })
+
   $.ui.dialog.prototype._focusTabbable = () => { }
 }
 
@@ -89,6 +90,17 @@ const openPopupActions = () => {
       'ui-dialog': 'popup_shortcuts'
     },
     open: () => {
+      // ATALHO PARA MUDAR VELOCIDADE
+      $('.speed_up').on('click', () => {
+        if (data.currentSpeed < 3) {
+          setSpeed(data.currentSpeed + 1)
+        }
+      })
+      $('.speed_down').on('click', () => {
+        if (data.currentSpeed > 1) {
+          setSpeed(data.currentSpeed - 1)
+        }
+      })
       $('.popup_shortcuts > .ui-dialog-titlebar > .ui-dialog-titlebar-close').focus()
     }
   })
@@ -118,18 +130,32 @@ const openPopupExit = () => {
     modal: true,
     open: () => {
       $('.btn-keep').focus()
+      $('.btn-keep').keydown((e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          $('.btn-exit').focus()
+        }
+      })
+      $('.btn-exit').keydown((e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          $('.btn-keep').focus()
+        }
+      })
+    },
+    close: () => {
+      $('.btn-keep').off('keydown')
+      $('.btn-exit').off('keydown')
     },
     buttons: [
       {
         text: 'Quero continuar',
-        class: 'btn btn-secondary btn-keep',
+        class: 'btn btn-secondary btn-keep focus_priority',
         click: () => {
           $('#dialog-confirm').dialog('close')
         }
       },
       {
         text: 'Quero sair',
-        class: 'btn btn-danger',
+        class: 'btn btn-danger btn-exit focus_priority',
         click: async () => {
           await eel.destroyController(data.controllerID)()
           window.location.href = '../main.html'

@@ -4,20 +4,25 @@ const startShortcut = () => {
   // MUDANÇA DE FOCO ENTRE AS TOOLBOXES
   // 
   $('body').keydown((e) => {
-    const key = e.which
-    if (key === 37) {//ESQUERDA
-      if (focusEl === 1) {
-        focusEl = 8
-      }
-      $(`.tool${focusEl - 1}`).focus()
-      focusEl--
+    const active = $(document.activeElement)
+    if (active !== null && active.hasClass('focus_priority')) {
+      return
     }
-    if (key === 39) {//DIREITA
-      if (focusEl === 7) {
-        focusEl = 0
+    if (!e.ctrlKey && !e.altKey && !e.shiftKey) {
+      if (e.key === 'ArrowLeft') {
+        if (focusEl === 1) {
+          focusEl = 8
+        }
+        $(`.tool${focusEl - 1}`).focus()
+        focusEl--
       }
-      $(`.tool${focusEl + 1}`).focus()
-      focusEl++
+      if (e.key === 'ArrowRight') {
+        if (focusEl === 7) {
+          focusEl = 0
+        }
+        $(`.tool${focusEl + 1}`).focus()
+        focusEl++
+      }
     }
   })
 
@@ -119,8 +124,41 @@ const startShortcut = () => {
     }
     if (e.altKey && e.key === 'a') {
     }
-    if (e.altKey && e.key === '/') {
+    if ((e.altKey || e.ctrlKey) && e.key === '/') {
       openPopupShortcuts()
+    }
+
+    // ATALHO PARA MUDAR ESCALA
+    if ((e.ctrlKey || e.altKey) && e.key === 'ArrowRight') {
+      e.preventDefault()
+      if (data.currentScale < 6) {
+        setScale(data.currentScale + 1)
+      }
+    }
+    if ((e.ctrlKey || e.altKey) && e.key === 'ArrowLeft') {
+      e.preventDefault()
+      if (data.currentScale > 1) {
+        setScale(data.currentScale - 1)
+      }
+    }
+
+    // ATALHO PARA MUDAR VELOCIDADE
+    if (e.altKey && e.key === '=') {
+      if (data.currentSpeed < 3) {
+        setSpeed(data.currentSpeed + 1)
+      }
+    }
+    if (e.altKey && e.key === '-') {
+      if (data.currentSpeed > 1) {
+        setSpeed(data.currentSpeed - 1)
+      }
+    }
+  })
+
+  // ATALHO PARA PAUSAR/CONTINUAR
+  $('.toolbox').keydown((e) => {
+    if (e.key === ' ') {
+      toggleStatus()
     }
   })
 }

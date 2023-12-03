@@ -78,10 +78,9 @@
     const data = {
       controllerID: null,
       moment: 0,
-      finished: false,
       status: 'paused',
-      currentStep: 1,
-      currentSpeedLevel: 1,
+      currentScale: 1,
+      currentSpeed: 1,
       currentData: {
         sp: 50,
         pv: 50,
@@ -191,17 +190,17 @@
   <div class="card">
     <div class="card-body">
       <h5 class="card-title h5">Controle de velocidade</h5>
-      <a href="#" class="card-link text-light">Aumentar</a>
-      <a href="#" class="card-link text-light">Diminuir</a>
+      <button href="#" class="btn btn-link text-light speed-control speed_up">Aumentar</button>
+      <button href="#" class="btn btn-link text-light speed-control speed_down" disabled>Diminuir</button>
     </div>
   </div>
   <div class="card mt-2">
     <div class="card-body">
-      <h5 class="card-title h5">Simulação futura</h5>
+      <h5 class="card-title h5">Adiantar simulação</h5>
       <div class="mb-3 w-100">
         <div class="d-inline-flex mt-2" style="height: 34px;">
           <input type="tel" class="form-control" name="simulation" id="simulation_input" placeholder="Simular até (s)" style="width: calc(100% - 85px)">
-          <button class="btn btn-dark btn_simulation" style="width: 85px;" onclick="plotar()">
+          <button class="btn btn-dark btn_simulation" style="width: 85px;" onclick="simulateUntil()">
             Simular
           </button>
         </div>
@@ -294,14 +293,14 @@
       <tr>
         <td class="shortcut_name">Passa a próxima escala</td>
         <td class="shortcut_key">
-          <div class="shortcut">Alt</div>
+          <div class="shortcut">CTRL</div>
           <div class="shortcut">→</div>
         </td>
       </tr>
       <tr>
         <td class="shortcut_name">Volta a escala anterior</td>
         <td class="shortcut_key">
-          <div class="shortcut">Alt</div>
+          <div class="shortcut">CTRL</div>
           <div class="shortcut">←</div>
         </td>
       </tr>
