@@ -8,11 +8,11 @@ from typing import List
 from simulator import Simulator
 
 PORT = 3345
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 
 def overridEdgeRun(_path: str, options: any, start_urls: List[str]) -> None:
-    cmd = "start msedge --new-window --app={}".format(start_urls[0])
+    cmd = "start msedge --new-window --disable-extensions --app={}".format(start_urls[0])
     popen = sps.Popen(
         cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE, shell=True
     )
