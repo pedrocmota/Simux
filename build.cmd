@@ -8,8 +8,8 @@ python -m nuitka ^
 --onefile-tempdir-spec="%TEMP%\\simux-temp" ^
 --company-name="IFBA - Salvador" ^
 --product-name="Simux" ^
---file-version="0.0.3" ^
---product-version="0.0.3" ^
+--file-version="0.0.4" ^
+--product-version="0.0.4" ^
 --file-description="Simux" ^
 --copyright="Copyright (c) 2023 - IFBA SSA" ^
 --output-dir=".build" ^

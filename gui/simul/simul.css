@@ -49,6 +49,24 @@
   }
 }
 
+@media screen and (max-width: 1273px) {
+  .toolbar {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .toolbox {
+    margin-left: 4px !important;
+    margin-right: 4px !important;
+  }
+
+  .main_box {
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+  }
+
+}
+
 /*  */
 
 .ui-dialog {

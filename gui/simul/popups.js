@@ -67,6 +67,9 @@ const openPopupConstants = () => {
     resizable: false,
     open: () => {
       $('#kp').focus()
+    },
+    close: () => {
+      $(`.tool${focusEl}`).focus()
     }
   })
   $('#kp').val(data.formData.kp)
@@ -104,6 +107,9 @@ const openPopupActions = () => {
         }
       })
       $('.popup_shortcuts > .ui-dialog-titlebar > .ui-dialog-titlebar-close').focus()
+    },
+    close: () => {
+      $(`.tool${focusEl}`).focus()
     }
   })
 }
@@ -120,6 +126,9 @@ const openPopupShortcuts = () => {
     },
     open: () => {
       $('.popup_shortcuts > .ui-dialog-titlebar > .ui-dialog-titlebar-close').focus()
+    },
+    close: () => {
+      $(`.tool${focusEl}`).focus()
     }
   })
 }
@@ -146,6 +155,7 @@ const openPopupExit = () => {
     close: () => {
       $('.btn-keep').off('keydown')
       $('.btn-exit').off('keydown')
+      $(`.tool${focusEl}`).focus()
     },
     buttons: [
       {

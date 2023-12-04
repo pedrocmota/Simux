@@ -4,6 +4,8 @@ from scipy.integrate import odeint
 import warnings
 import random
 
+# Modelo: First Order Plus Dead Time (FOPDT)
+
 
 class PID_Controller(object):
     def __init__(self):
@@ -101,7 +103,6 @@ class PID_Controller(object):
 
 
 class FOPDT_Model(object):
-    # Modelo: First Order Plus Dead Time (FOPDT)
     def __init__(self):
         self.work_MV = []
 
