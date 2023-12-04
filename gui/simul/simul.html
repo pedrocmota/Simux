@@ -28,8 +28,8 @@
   <link rel="icon" href="../statics/favicon.svg">
   <style>
     body {
-      min-width: 1366px;
-      min-height: 768px;
+      min-width: 1245px;
+      min-height: 720px;
     }
   </style>
 </head>
@@ -41,7 +41,7 @@
   <div class="toolbar">
     <div class="toolbox sp_box tool1" tabindex="1">
       <span class="toolbox_value_title">SP</span>
-      <input class="sp_input" value="0%" disabled />
+      <input class="sp_input" value="0%" disabled autocomplete="off" />
     </div>
     <div class="toolbox pv_box tool2" tabindex="2">
       <span class="toolbox_value_title">PV</span>
@@ -134,18 +134,18 @@
   <div>
     <div class="mb-3 w-100">
       <label for="kp" class="form-label">Valor de KP</label>
-      <input type="tel" class="form-control" name="kp" id="kp">
+      <input type="tel" class="form-control" name="kp" id="kp" autocomplete="off">
       <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
     </div>
     <div class="mb-3 d-sm-inline-flex w-100">
       <div class="w-50 me-2">
         <label for="ki" class="form-label">Valor de Ki</label>
-        <input type="tel" class="form-control" name="ki" id="ki">
+        <input type="tel" class="form-control" name="ki" id="ki" autocomplete="off">
         <div id="help2" class="form-text">Mínimo de 0 e máximo de 30.</div>
       </div>
       <div class="w-50 ms-2">
         <label for="initialKd" class="form-label">Valor de Kd</label>
-        <input type="tel" class="form-control" name="kd" id="kd">
+        <input type="tel" class="form-control" name="kd" id="kd" autocomplete="off">
         <div id="help3" class="form-text">Mínimo de 0 e máximo de 30.</div>
       </div>
     </div>
@@ -191,19 +191,19 @@
 </div>
 
 <div id="popup_commands" style="display: none;">
-  <div class="card">
-    <div class="card-body">
+  <div class="card bg-transparent">
+    <div class="card-body pb-1 pt-2">
       <h5 class="card-title h5">Controle de velocidade</h5>
       <button href="#" class="btn btn-link text-light speed-control speed_up">Aumentar</button>
       <button href="#" class="btn btn-link text-light speed-control speed_down" disabled>Diminuir</button>
     </div>
   </div>
-  <div class="card mt-2">
-    <div class="card-body">
+  <div class="card mt-2 bg-transparent">
+    <div class="card-body pb-1 pt-2">
       <h5 class="card-title h5">Adiantar simulação</h5>
-      <div class="mb-3 w-100">
+      <div class="mb-2 w-100">
         <div class="d-inline-flex mt-2" style="height: 34px;">
-          <input type="tel" class="form-control" name="simulation" id="simulation_input" placeholder="Simular até (s)" style="width: calc(100% - 85px)">
+          <input type="tel" class="form-control" name="simulation" id="simulation_input" placeholder="Simular até (s)" style="width: calc(100% - 85px)" autocomplete="off">
           <button class="btn btn-dark btn_simulation" style="width: 85px;" onclick="simulateUntil()">
             Simular
           </button>
@@ -212,8 +212,8 @@
       </div>
     </div>
   </div>
-  <div class="card mt-2">
-    <div class="card-body">
+  <div class="card mt-2 bg-transparent">
+    <div class="card-body pt-2">
       <h5 class="card-title h5">Mudar escala</h5>
       <div class="list-group">
         <a href="#" id="scale-1" class="list-group-item list-group-item-action scales active text-light" onclick="setScale(1)">0s - 300s</a>
@@ -283,29 +283,46 @@
       <tr>
         <td class="shortcut_name">Aumenta a velocidade da simulação</td>
         <td class="shortcut_key">
-          <div class="shortcut">Alt</div>
+          <div class="shortcut">Ctrl ou Alt</div>
           <div class="shortcut">+</div>
         </td>
       </tr>
       <tr>
         <td class="shortcut_name">Diminui a velocidade da simulação</td>
         <td class="shortcut_key">
-          <div class="shortcut">Alt</div>
+          <div class="shortcut">Ctrl ou Alt</div>
           <div class="shortcut">-</div>
         </td>
       </tr>
       <tr>
         <td class="shortcut_name">Passa a próxima escala</td>
         <td class="shortcut_key">
-          <div class="shortcut">CTRL</div>
+          <div class="shortcut">Ctrl ou Alt</div>
           <div class="shortcut">→</div>
         </td>
       </tr>
       <tr>
         <td class="shortcut_name">Volta a escala anterior</td>
         <td class="shortcut_key">
-          <div class="shortcut">CTRL</div>
+          <div class="shortcut">Ctrl ou Alt</div>
           <div class="shortcut">←</div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <hr />
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Alternar tela cheia</td>
+        <td class="shortcut_key">
+          <div class="shortcut" colspan="2">F11</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="shortcut_name">Tirar print do gráfico</td>
+        <td class="shortcut_key">
+          <div class="shortcut" colspan="2">F10</div>
         </td>
       </tr>
     </tbody>
@@ -313,7 +330,7 @@
 </div>
 
 <div id="dialog-confirm" title="Deseja realmente sair?" style="display: none;">
-  <p>
+  <p class="mb-0">
     <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
     A simulação será encerrada e todos os dados serão perdidos.
   </p>

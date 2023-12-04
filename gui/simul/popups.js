@@ -21,34 +21,36 @@ const initPopups = () => {
   })
 
   $('#save_constants').on('click', () => {
-    const kp = parseFloat($('#kp').val() || 0)
-    const ki = parseFloat($('#ki').val() || 0)
-    const kd = parseFloat($('#kd').val() || 0)
-    let changedKp = false
-    let changedKi = false
-    let changedKd = false
+    if (data.status !== 'finished') {
+      const kp = parseFloat($('#kp').val() || 0)
+      const ki = parseFloat($('#ki').val() || 0)
+      const kd = parseFloat($('#kd').val() || 0)
+      let changedKp = false
+      let changedKi = false
+      let changedKd = false
 
-    if (kp !== data.formData.kp) {
-      setKp(kp)
-      changedKp = true
-    }
-    if (ki !== data.formData.ki) {
-      setKi(ki)
-      changedKi = true
-    }
-    if (kd !== data.formData.kd) {
-      setKd(kd)
-      changedKd = true
-    }
+      if (kp !== data.formData.kp) {
+        setKp(kp)
+        changedKp = true
+      }
+      if (ki !== data.formData.ki) {
+        setKi(ki)
+        changedKi = true
+      }
+      if (kd !== data.formData.kd) {
+        setKd(kd)
+        changedKd = true
+      }
 
-    if (changedKp) {
-      generateToast(`Kp alterado para ${kp}`)
-    }
-    if (changedKi) {
-      generateToast(`Ki alterado para ${ki}`)
-    }
-    if (changedKd) {
-      generateToast(`Kd alterado para ${kd}`)
+      if (changedKp) {
+        generateToast(`Kp alterado para ${kp}`)
+      }
+      if (changedKi) {
+        generateToast(`Ki alterado para ${ki}`)
+      }
+      if (changedKd) {
+        generateToast(`Kd alterado para ${kd}`)
+      }
     }
   })
 
@@ -84,10 +86,10 @@ const openPopupActions = () => {
     title: 'Ações',
     modal: true,
     width: 320,
-    height: 650,
+    height: 545,
     resizable: false,
     classes: {
-      'ui-dialog': 'popup_shortcuts'
+      'ui-dialog': 'popup_shortcuts ui-corner-all ui-widget'
     },
     open: () => {
       // ATALHO PARA MUDAR VELOCIDADE
@@ -110,11 +112,11 @@ const openPopupShortcuts = () => {
   $('#popup_shortcuts').dialog({
     title: 'Mapa de atalhos',
     modal: true,
-    width: 450,
+    width: 470,
     height: 500,
     resizable: false,
     classes: {
-      'ui-dialog': 'popup_shortcuts'
+      'ui-dialog': 'popup_shortcuts ui-corner-all ui-widget'
     },
     open: () => {
       $('.popup_shortcuts > .ui-dialog-titlebar > .ui-dialog-titlebar-close').focus()

@@ -11,13 +11,16 @@ Esperamos que o Simux seja uma ferramenta valiosa para a comunidade de automaç�
 ## Requisitos para Rodar o Software
 
 - Sistema Operacional: Windows 10 ou 11;
-- Microsoft Edge instalado;
+- Microsoft Edge (o novo, baseado no Chromium) instalado;
+- A porta 3345 deve estar disponível (por padrão está);
 
-- <b>**Nota importante**</b>:
+- <b>**Notas importantes**</b>:
   
-  O Edge já vem instalado no Windows 11 e no Windows 10. Nesse último caso, após a atualização de 15 de janeiro de 2020.
+  O novo Edge já vem instalado no Windows 11 e no Windows 10. Nesse último caso, após a atualização de 15 de janeiro de 2020.
   
   Caso o Edge não esteja disponível, o programa não irá iniciar.
+
+  A porta 3345 está disponível por padrão no firewall do Windows. Falhas podem ocorrer quando uma instância do Simul já está aberta ou quando essa porta é fechada no Firewall para localhost.
   
 
 ## Como Baixar
@@ -42,10 +45,17 @@ Para baxar o Simux, vá até a aba "Release" à direita da tela e selecione a ve
   
 - Capacidade de adiantar simulações futuras;
   
-- Capacidade de pausar a simulação à vontade
-  
+- Capacidade de pausar a simulação à vontade;
+
+- Capacidade de gerar uma foto do gráfico;
+
+## Nota sobre falsos-positivos
+
+Esse software é compilado em C utilizando o Nuitka. Por causa disso, alguns antivíruis podem identificar fragmentos de código Nuitka como malwares. Trata-se de falsos positivos, o programa é seguro e seu código-fonte é totalmente auditável e recompilável.
 
 ## Requisitos para Executar em Desenvolvimento
+
+Esse trecho é reservado para quem queira modificar o código, se isso não te interessa, ignore esse tópico e o abaixo
 
 Se você deseja executar o código-fonte localmente, você precisará:
 
@@ -55,3 +65,17 @@ Se você deseja executar o código-fonte localmente, você precisará:
   
   ```bash
   pip install -r requirements.txt
+
+Depois, execute o arquivo "run.cmd" na mesma pasta.
+  
+## Requisitos para compilar
+
+Em resumo, é necessário o ambiente de desenvolvimento citado acima e de um compilador C, seja o Visual Studio ou o GCC. Todos as releases disponíveis foram geradas com o Visual Studio 2022.
+
+E, por fim, execute o comando "build.cmd" na pasta raíz.
+
+Verifique a repositório oficial do Nuitka para mais informações.
+
+## Dúvidas
+
+Caso tenha algum questionamento, entre em contato através do Github.
