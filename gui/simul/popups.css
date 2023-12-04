@@ -84,3 +84,12 @@
   cursor: not-allowed;
   color: gray;
 }
+
+.list-group-item {
+  height: 32px;
+  padding: 4px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  display: flex;
+  align-items: center;
+}

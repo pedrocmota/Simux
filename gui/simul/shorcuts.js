@@ -44,7 +44,7 @@ const startShortcut = () => {
   // AÇÃO MUDANÇA SETPOINT
   let sp_selecting = false
   const action_setpoint = () => {
-    if (sp_selecting == false) {
+    if (sp_selecting == false && data.status !== 'finished') {
       $('.sp_input').attr('disabled', false)
       $('.sp_input').addClass('sp_input_selected')
       $('.sp_input').val('')
@@ -143,15 +143,38 @@ const startShortcut = () => {
     }
 
     // ATALHO PARA MUDAR VELOCIDADE
-    if (e.altKey && e.key === '=') {
+    if ((e.altKey || e.ctrlKey) && e.key === '=') {
+      e.preventDefault()
       if (data.currentSpeed < 3) {
         setSpeed(data.currentSpeed + 1)
       }
     }
-    if (e.altKey && e.key === '-') {
+    if ((e.altKey || e.ctrlKey) && e.key === '-') {
+      e.preventDefault()
       if (data.currentSpeed > 1) {
         setSpeed(data.currentSpeed - 1)
       }
+    }
+
+    if (
+      e.key === 'F1' || e.key === 'F2' || e.key === 'F3' ||
+      e.key === 'F4' || e.key === 'F5' || e.key === 'F6' ||
+      e.key === 'F7' || e.key === 'F8' || e.key === 'F9' || e.key === 'F10') {
+      e.preventDefault()
+    }
+
+    if (e.key === 'F10') {
+      const formattedDate = new Date().toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
+      chart.set('exportFileName', `Simux-${formattedDate}`)
+      chart.exportChart({format: 'png'})
     }
   })
 

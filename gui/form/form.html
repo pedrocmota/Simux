@@ -33,53 +33,53 @@
       <div class="mb-3 d-sm-inline-flex w-100">
         <div class="w-50 me-2">
           <label for="processGain" class="form-label">Ganho do processo</label>
-          <input type="tel" class="form-control" name="model_gain" id="processGain" value="2" tabindex="1">
+          <input type="tel" class="form-control" name="model_gain" id="processGain" value="2" tabindex="1" autocomplete="off">
           <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
         </div>
         <div class="w-50 ms-2">
           <label for="timeConstant" class="form-label">Constante de tempo (s)</label>
-          <input type="tel" class="form-control" name="model_tc" id="timeConstant" value="20" tabindex="2">
+          <input type="tel" class="form-control" name="model_tc" id="timeConstant" value="20" tabindex="2" autocomplete="off">
           <div id="help2" class="form-text">Mínimo de 1 e máximo de 100.</div>
         </div>
       </div>
       <div class="mb-3 d-sm-inline-flex w-100">
         <div class="w-50 me-2">
           <label for="deathTime" class="form-label">Tempo morto (s)</label>
-          <input type="tel" class="form-control" name="model_dt" id="deathTime" value="5" tabindex="3">
+          <input type="tel" class="form-control" name="model_dt" id="deathTime" value="5" tabindex="3" autocomplete="off">
           <div id="help3" class="form-text">Mínimo de 1 e máximo de 20.</div>
         </div>
         <div class="w-50 ms-2">
           <label for="bias" class="form-label">Bias (%)</label>
-          <input type="tel" class="form-control" name="model_bias" id="bias" value="20" tabindex="4">
+          <input type="tel" class="form-control" name="model_bias" id="bias" value="20" tabindex="4" autocomplete="off">
           <div id="help4" class="form-text">Mínimo de 0 e máximo de 60.</div>
         </div>
       </div>
       <div class="mb-3 w-100">
         <label for="noise" class="form-label">Ruído do processo:</label>
-        <input type="text" id="noise" name="noise" tabindex="5" />
+        <input type="text" id="noise" name="noise" tabindex="5" autocomplete="off" />
         <div id="help5" class="form-text">Ruído desabilitado</div>
       </div>
       <hr />
       <div class="mb-3 w-100">
         <label for="initialKp" class="form-label">Valor inicial do KP</label>
-        <input type="tel" class="form-control" name="kp" id="initialKp" value="2" tabindex="6">
+        <input type="tel" class="form-control" name="kp" id="initialKp" value="2" tabindex="6" autocomplete="off">
         <div id="help7" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
       </div>
       <div class="mb-3 d-sm-inline-flex w-100">
         <div class="w-50 me-2">
           <label for="initialKi" class="form-label">Valor inicial do Ki</label>
-          <input type="tel" class="form-control" name="ki" id="initialKi" value="0" tabindex="7">
+          <input type="tel" class="form-control" name="ki" id="initialKi" value="0" tabindex="7" autocomplete="off">
           <div id="help8" class="form-text">Mínimo de 0 e máximo de 30.</div>
         </div>
         <div class="w-50 ms-2">
           <label for="initialKd" class="form-label">Valor inicial do Kd</label>
-          <input type="tel" class="form-control" name="kd" id="initialKd" value="0" tabindex="8">
+          <input type="tel" class="form-control" name="kd" id="initialKd" value="0" tabindex="8" autocomplete="off">
           <div id="help9" class="form-text">Mínimo de 0 e máximo de 30.</div>
         </div>
       </div>
       <div class="mb-3 w-100">
         <label for="initialSP" class="form-label">Valor inicial do SP (%)</label>
-        <input type="tel" class="form-control" name="initSP" id="initialSP" value="50" tabindex="9">
+        <input type="tel" class="form-control" name="initSP" id="initialSP" value="50" tabindex="9" autocomplete="off">
         <div id="help10" class="form-text">Mínimo de 5% e máximo de 90%.</div>
       </div>
       <button type="submit" class="btn btn-primary w-100 mt-2 mb-5" tabindex="10">Iniciar simulação</button>
@@ -157,6 +157,22 @@
 
       document.addEventListener('contextmenu', (e) => {
         e.preventDefault()
+      })
+
+      $(document).keydown((e) => {
+        if (
+          e.key === 'F1' || e.key === 'F2' || e.key === 'F3' ||
+          e.key === 'F4' || e.key === 'F5' || e.key === 'F6' ||
+          e.key === 'F7' || e.key === 'F8' || e.key === 'F9' || e.key === 'F10') {
+          e.preventDefault()
+        }
+        if (e.key === 'Backspace') {
+          const active = $(document.activeElement)
+          if (!active.is('input')) {
+            e.preventDefault()
+            window.location.href = '../main.html'
+          }
+        }
       })
     })
   </script>
