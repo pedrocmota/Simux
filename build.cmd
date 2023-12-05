@@ -9,8 +9,8 @@ python -m nuitka ^
 --force-stderr-spec="%%TEMP%%\\simux-temp\\err.txt" ^
 --company-name="IFBA - Salvador" ^
 --product-name="Simux" ^
---file-version="0.0.4" ^
---product-version="0.0.4" ^
+--file-version="0.0.5" ^
+--product-version="0.0.5" ^
 --file-description="Simux" ^
 --copyright="Copyright (c) 2023 - IFBA SSA" ^
 --output-dir=".build" ^

@@ -160,6 +160,12 @@
       })
 
       $(document).keydown((e) => {
+        if ((e.ctrlKey || e.altKey) && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+          e.preventDefault()
+        }
+        if ((e.altKey || e.ctrlKey) && (e.key === '=' || e.key === '-')) {
+          e.preventDefault()
+        }
         if (
           e.key === 'F1' || e.key === 'F2' || e.key === 'F3' ||
           e.key === 'F4' || e.key === 'F5' || e.key === 'F6' ||
