@@ -5,7 +5,8 @@ python -m nuitka ^
 --include-data-dir=./gui=gui ^
 --windows-icon-from-ico=favicon.ico ^
 --windows-disable-console ^
---onefile-tempdir-spec="%TEMP%\\simux-temp" ^
+--onefile-tempdir-spec="%%TEMP%%\\simux-temp" ^
+--force-stderr-spec="%%TEMP%%\\simux-temp\\err.txt" ^
 --company-name="IFBA - Salvador" ^
 --product-name="Simux" ^
 --file-version="0.0.4" ^
