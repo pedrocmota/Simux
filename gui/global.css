@@ -13,6 +13,7 @@ html, body {
 
 * {
   box-sizing: border-box !important;
+  user-select: none !important;
 }
 
 .irs-bar, .irs-from, .irs-to, .irs-single {

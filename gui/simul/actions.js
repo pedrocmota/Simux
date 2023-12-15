@@ -108,28 +108,57 @@ const setSpeed = (speed) => {
 
 const setSP = async (newSP) => {
   if (!IS_DEV) {
-    await eel.setSP(data.controllerID, newSP)()
+    await eel.setSP(newSP)()
   }
 }
 
 const setKp = async (newKp) => {
   data.formData.kp = newKp
+  $('#model_kp').text(`${newKp}`)
   if (!IS_DEV) {
-    await eel.setKp(data.controllerID, newKp)()
+    await eel.setKp(newKp)()
   }
 }
 
 const setKi = async (newKi) => {
   data.formData.ki = newKi
+  if (newKi === 0) {
+    $('#model_ki').text('0')
+  } else {
+    $('#model_ki').text(`${newKi}`)
+  }
   if (!IS_DEV) {
-    await eel.setKi(data.controllerID, newKi)()
+    await eel.setKi(newKi)()
   }
 }
 
 const setKd = async (newKd) => {
   data.formData.kd = newKd
+  if (newKd === 0) {
+    $('#model_kd').text('0')
+  } else {
+    $('#model_kd').text(`${newKd}`)
+  }
   if (!IS_DEV) {
-    await eel.setKd(data.controllerID, newKd)()
+    await eel.setKd(newKd)()
+  }
+}
+
+const setBias = async (newBias) => {
+  data.formData.bias = newBias
+  $('#model_bias').text(`${newBias}%`)
+  if (!IS_DEV) {
+    await eel.setBias(newBias)()
+  }
+}
+
+const setNoise = async (newMinNoise, newMaxNoise) => {
+  data.formData.model_noise_min = newMinNoise
+  data.formData.model_noise_max = newMaxNoise
+  $('#model_noise_min').text(`${newMinNoise}%`)
+  $('#model_noise_max').text(`${newMaxNoise}%`)
+  if (!IS_DEV) {
+    await eel.setNoise(newMinNoise, newMaxNoise)()
   }
 }
 
@@ -138,7 +167,7 @@ const pulseController = async (disableRender = false) => {
     if (data.moment === 1800) {
       return finish()
     }
-    let vt = await eel.getControllerData(data.controllerID)()
+    let vt = await eel.controllerPulse()()
     data.moment = vt['moment']
     data.currentData.sp = vt['SP']
     data.currentData.pv = vt['PV']

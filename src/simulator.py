@@ -170,7 +170,7 @@ class Simulator:
         if i == 0:
             self.PV[0] = self.initSP
 
-    def get(self):
+    def pulse(self):
         i = self.moment
         if i == 0:
             self.SP[i] = self.initSP
@@ -217,3 +217,17 @@ class Simulator:
     def setKd(self, value):
         self.kd = value
         self.pid.setKd(self.kd)
+
+    def setBias(self, value):
+        self.model_bias = value
+        self.process_model.change_params(
+            (self.model_gain, self.model_tc, self.model_dt, self.model_bias)
+        )
+
+    def setNoise(self, minNoise, maxNoise):
+        self.model_noise_min = minNoise
+        self.model_noise_max = maxNoise
+        self.noise = np.random.uniform(
+            self.model_noise_min, self.model_noise_max, self.maxsize
+        )
+        self.noise *= np.random.choice([-1, 1], self.maxsize)

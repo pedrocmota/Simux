@@ -86,10 +86,13 @@
 }
 
 .list-group-item {
-  height: 32px;
+  height: 36px;
   padding: 4px !important;
   padding-left: 10px !important;
   padding-right: 10px !important;
   display: flex;
   align-items: center;
+  margin-top: auto !important;
+  border-top-width: 0 !important;
+  cursor: pointer;
 }

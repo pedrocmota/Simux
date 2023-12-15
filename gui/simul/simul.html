@@ -8,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="./box.css">
   <link rel="stylesheet" type="text/css" href="./popups.css">
   <link rel="stylesheet" type="text/css" href="../statics/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="../statics/rangeSlider.css" />
   <link rel="stylesheet" type="text/css" href="../statics/jquery-ui.css">
   <link rel="stylesheet" type="text/css" href="../statics/jquery.toast.css">
   <script type="text/javascript" src="./chart.js"></script>
@@ -21,6 +22,7 @@
   <script type="text/javascript" src="../statics/chart.js"></script>
   <script type="text/javascript" src="../statics/jquery.mask.js"></script>
   <script type="text/javascript" src="../statics/jquery.toast.js"></script>
+  <script type="text/javascript" src="../statics/rangeSlider.js"></script>
   <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
   <script type="text/javascript" src="../statics/replace_eel.js"></script>
   <meta charset="utf-8">
@@ -76,7 +78,6 @@
 
     const URL = new URLSearchParams(window.location.search)
     const data = {
-      controllerID: null,
       moment: 0,
       status: 'paused',
       currentScale: 1,
@@ -93,23 +94,22 @@
       },
       formData: {
         controller_action: URL.get('controller_action'),
-        model_gain: parseFloat(URL.get('model_gain')) || 2,
-        model_tc: parseFloat(URL.get('model_tc')) || 20,
-        model_dt: parseFloat(URL.get('model_dt')) || 5,
-        model_bias: parseFloat(URL.get('model_bias')) || 50,
-        kp: parseFloat(URL.get('kp')) || 2,
-        ki: parseFloat(URL.get('ki')) || 0,
-        kd: parseFloat(URL.get('kd')) || 0,
-        initSP: parseFloat(URL.get('initSP')) || 50,
-        model_noise_min: parseFloat(URL.get('model_noise_min')) || 0,
-        model_noise_max: parseFloat(URL.get('model_noise_max')) || 0
+        model_gain: parseFloat(URL.get('model_gain') || 2),
+        model_tc: parseFloat(URL.get('model_tc') || 20),
+        model_dt: parseFloat(URL.get('model_dt') || 5),
+        model_bias: parseFloat(URL.get('model_bias') || 50),
+        kp: parseFloat(URL.get('kp') || 2),
+        ki: parseFloat(URL.get('ki') || 0),
+        kd: parseFloat(URL.get('kd') || 0),
+        initSP: parseFloat(URL.get('initSP') || 50),
+        model_noise_min: parseFloat(URL.get('model_noise_min') || 0),
+        model_noise_max: parseFloat(URL.get('model_noise_max') || 0)
       }
     }
 
     const initController = async () => {
       try {
-        const controllerID = await eel.initControler(data.formData)()
-        data.controllerID = controllerID
+        await eel.initControler(data.formData)()
       } catch (error) {
         console.error(error)
         alert('Erro ao iniciar o controlador. Verifique o console para mais informações.')
@@ -131,31 +131,55 @@
 </body>
 
 <div id="popup_constants" style="display: none;">
-  <div>
-    <div class="mb-3 w-100">
-      <label for="kp" class="form-label">Valor de KP</label>
-      <input type="tel" class="form-control" name="kp" id="kp" autocomplete="off">
-      <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
-    </div>
-    <div class="mb-3 d-sm-inline-flex w-100">
-      <div class="w-50 me-2">
-        <label for="ki" class="form-label">Valor de Ki</label>
-        <input type="tel" class="form-control" name="ki" id="ki" autocomplete="off">
-        <div id="help2" class="form-text">Mínimo de 0 e máximo de 30.</div>
+  <ul class="nav nav-tabs" id="constants-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="actions-tab" data-bs-toggle="tab" data-bs-target="#actions" type="button" role="tab" aria-controls="basic" aria-selected="true">Ações</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="bias-tab" data-bs-toggle="tab" data-bs-target="#bias" type="button" role="tab" aria-controls="scale" aria-selected="false">Bias e ruído</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="process-constants-tab" data-bs-toggle="tab" data-bs-target="#process-constants" type="button" role="tab" aria-controls="process-constants" aria-selected="false">Processo</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="constants-tab-content">
+    <div class="tab-pane show active" id="actions" role="tabpanel" aria-labelledby="actions-tab">
+      <div>
+        <div class="mb-3 w-100 mt-2">
+          <label for="kp" class="form-label">Valor de KP</label>
+          <input type="tel" class="form-control" name="kp" id="kp" autocomplete="off">
+          <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 10.</div>
+        </div>
+        <div class="mb-3 d-sm-inline-flex w-100">
+          <div class="w-50 me-2">
+            <label for="ki" class="form-label">Valor de Ki</label>
+            <input type="tel" class="form-control" name="ki" id="ki" autocomplete="off">
+            <div id="help2" class="form-text">Mínimo de 0 e máximo de 5.</div>
+          </div>
+          <div class="w-50 ms-2">
+            <label for="initialKd" class="form-label">Valor de Kd</label>
+            <input type="tel" class="form-control" name="kd" id="kd" autocomplete="off">
+            <div id="help3" class="form-text">Mínimo de 0 e máximo de 30.</div>
+          </div>
+        </div>
+        <button id="save_constants" class="btn btn-primary w-100 mt-2 mb-1">Salvar</button>
       </div>
-      <div class="w-50 ms-2">
-        <label for="initialKd" class="form-label">Valor de Kd</label>
-        <input type="tel" class="form-control" name="kd" id="kd" autocomplete="off">
-        <div id="help3" class="form-text">Mínimo de 0 e máximo de 30.</div>
-      </div>
     </div>
-    <p>
-      <a class="showProcess" data-bs-toggle="collapse" href="#processConstants" role="button" aria-expanded="false" aria-controls="processConstants">
-        Visualizar constantes do processo
-      </a>
-    </p>
-    <div class="collapse" id="processConstants">
-      <div class="card card-body">
+    <div class="tab-pane" id="bias" role="bias" aria-labelledby="bias-tab">
+      <div class="w-100 mt-2">
+        <label for="bias_input" class="form-label">Bias (%)</label>
+        <input type="tel" class="form-control" name="bias_input" id="bias_input" value="20" tabindex="4" autocomplete="off">
+        <div id="help_bias" class="form-text">Mínimo de 0 e máximo de 80.</div>
+      </div>
+      <div class="mb-3 w-100">
+        <label for="noise" class="form-label" style="margin-top: 14px;">Ruído do processo:</label>
+        <input type="text" id="noise" name="noise" tabindex="5" autocomplete="off" />
+        <div id="help_noise" style="height: 42px;" class="form-text">Ruído desabilitado</div>
+      </div>
+      <button id="save_bias" class="btn btn-primary w-100 mt-2 mb-1">Salvar</button>
+    </div>
+    <div class="tab-pane" id="process-constants" role="process-constants" aria-labelledby="process-constants-tab">
+      <div class="card card-body mt-2">
         <table>
           <tbody>
             <tr>
@@ -182,46 +206,70 @@
               <td class="processConstantName">Ruído máximo: </td>
               <td id="model_noise_max"></td>
             </tr>
+            <tr>
+              <td colspan="2">
+                <hr />
+              </td>
+            </tr>
+            <tr>
+              <td class="processKpName">Valor Kp: </td>
+              <td id="model_kp"></td>
+            </tr>
+            <tr>
+              <td class="processKiName">Valor Ki: </td>
+              <td id="model_ki"></td>
+            </tr>
+            <tr>
+              <td class="processKdName">Valor Kd: </td>
+              <td id="model_kd"></td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <button id="save_constants" class="btn btn-primary w-100 mt-2 mb-1">Salvar</button>
   </div>
 </div>
 
 <div id="popup_commands" style="display: none;">
-  <div class="card bg-transparent">
-    <div class="card-body pb-1 pt-2">
-      <h5 class="card-title h5">Controle de velocidade</h5>
-      <button href="#" class="btn btn-link text-light speed-control speed_up">Aumentar</button>
-      <button href="#" class="btn btn-link text-light speed-control speed_down" disabled>Diminuir</button>
-    </div>
-  </div>
-  <div class="card mt-2 bg-transparent">
-    <div class="card-body pb-1 pt-2">
-      <h5 class="card-title h5">Adiantar simulação</h5>
-      <div class="mb-2 w-100">
-        <div class="d-inline-flex mt-2" style="height: 34px;">
-          <input type="tel" class="form-control" name="simulation" id="simulation_input" placeholder="Simular até (s)" style="width: calc(100% - 85px)" autocomplete="off">
-          <button class="btn btn-dark btn_simulation" style="width: 85px;" onclick="simulateUntil()">
-            Simular
-          </button>
+  <ul class="nav nav-tabs" id="actions-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab" aria-controls="basic" aria-selected="true">Básico</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="scale-tab" data-bs-toggle="tab" data-bs-target="#scale" type="button" role="tab" aria-controls="scale" aria-selected="false">Escalas</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="actions-tab-content">
+    <div class="tab-pane show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+      <div class="card-body pb-1 pt-2">
+        <h5 class="card-title h5">Controle de velocidade</h5>
+        <button href="#" class="btn btn-link text-light speed-control speed_up">Aumentar</button>
+        <button href="#" class="btn btn-link text-light speed-control speed_down" disabled>Diminuir</button>
+      </div>
+      <div class="card-body pb-1 pt-2">
+        <h5 class="card-title h5">Adiantar simulação</h5>
+        <div class="mb-2 w-100">
+          <div class="d-inline-flex mt-2" style="height: 34px;">
+            <input type="tel" class="form-control" name="simulation" id="simulation_input" placeholder="Simular até (s)" style="width: calc(100% - 85px)" autocomplete="off">
+            <button class="btn btn-dark btn_simulation" style="width: 85px;" onclick="simulateUntil()">
+              Simular
+            </button>
+          </div>
+          <div class="form-text mt-2" style="font-size: 13px;">Máximo de 1800 segundos (30 minutos)</div>
         </div>
-        <div class="form-text mt-2" style="font-size: 13px;">Máximo de 1800 segundos (30 minutos)</div>
       </div>
     </div>
-  </div>
-  <div class="card mt-2 bg-transparent">
-    <div class="card-body pt-2">
-      <h5 class="card-title h5">Mudar escala</h5>
-      <div class="list-group">
-        <a href="#" id="scale-1" class="list-group-item list-group-item-action scales active text-light" onclick="setScale(1)">0s - 300s</a>
-        <a href="#" id="scale-2" class="list-group-item list-group-item-action scales text-light" onclick="setScale(2)">300s - 600s</a>
-        <a href="#" id="scale-3" class="list-group-item list-group-item-action scales text-light" onclick="setScale(3)">600s - 900s</a>
-        <a href="#" id="scale-4" class="list-group-item list-group-item-action scales text-light" onclick="setScale(4)">900s - 1200s</a>
-        <a href="#" id="scale-5" class="list-group-item list-group-item-action scales text-light" onclick="setScale(5)">1200s - 1500s</a>
-        <a href="#" id="scale-6" class="list-group-item list-group-item-action scales text-light" onclick="setScale(6)">1500s - 1800s</a>
+    <div class="tab-pane" id="scale" role="tabpanel" aria-labelledby="scale-tab">
+      <div class="card-body pt-2">
+        <h5 class="card-title h5 mb-2">Mudar escala</h5>
+        <div class="list-group">
+          <a id="scale-1" class="list-group-item list-group-item-action scales active text-light" onclick="setScale(1)">0s - 300s</a>
+          <a id="scale-2" class="list-group-item list-group-item-action scales text-light" onclick="setScale(2)">300s - 600s</a>
+          <a id="scale-3" class="list-group-item list-group-item-action scales text-light" onclick="setScale(3)">600s - 900s</a>
+          <a id="scale-4" class="list-group-item list-group-item-action scales text-light" onclick="setScale(4)">900s - 1200s</a>
+          <a id="scale-5" class="list-group-item list-group-item-action scales text-light" onclick="setScale(5)">1200s - 1500s</a>
+          <a id="scale-6" class="list-group-item list-group-item-action scales text-light" onclick="setScale(6)">1500s - 1800s</a>
+        </div>
       </div>
     </div>
   </div>

@@ -128,6 +128,10 @@ const startShortcut = () => {
       openPopupShortcuts()
     }
 
+    if ((e.altKey || e.ctrlKey) && (e.key === '=' || e.key === '-' || e.key === '_' || e.key === '+')) {
+      e.preventDefault()
+    }
+
     // ATALHO PARA MUDAR ESCALA
     if ((e.ctrlKey || e.altKey) && e.key === 'ArrowRight') {
       e.preventDefault()

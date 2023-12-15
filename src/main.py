@@ -8,7 +8,7 @@ from typing import List
 from simulator import Simulator
 
 PORT = 3345
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 
 def showErrror(error: str):
@@ -38,7 +38,7 @@ def getPositionOfWindow():
     return x, y
 
 
-def portIsUsed(port: int):
+def checkIfPortIsUsed(port: int):
     import socket
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -50,51 +50,61 @@ def portIsUsed(port: int):
 
 edge.run = overrideEdgeRun
 
-controllersArray = []
+controller = None
 
 
 @eel.expose
 def initControler(controllerData):
-    sim = Simulator(controllerData)
-    controllersArray.append(sim)
-    controllerID = len(controllersArray) - 1
-    return controllerID
+    global controller
+    controller = Simulator(controllerData)
+    return controller
 
 
 @eel.expose
-def destroyController(controllerID):
-    controllersArray.pop(controllerID)
+def destroyController():
+    global controller
+    controller = None
 
 
 @eel.expose
-def getControllerData(controllerID):
-    return controllersArray[controllerID].get()
+def controllerPulse():
+    return controller.pulse()
 
 
 @eel.expose
-def setSP(controllerID, newSP):
-    return controllersArray[controllerID].setSP(newSP)
+def setSP(newSP):
+    return controller.setSP(newSP)
 
 
 @eel.expose
-def setKp(controllerID, newKP):
-    return controllersArray[controllerID].setKp(newKP)
+def setKp(newKP):
+    return controller.setKp(newKP)
 
 
 @eel.expose
-def setKi(controllerID, newKI):
-    return controllersArray[controllerID].setKi(newKI)
+def setKi(newKI):
+    return controller.setKi(newKI)
 
 
 @eel.expose
-def setKd(controllerID, newKD):
-    return controllersArray[controllerID].setKd(newKD)
+def setKd(newKD):
+    return controller.setKd(newKD)
+
+
+@eel.expose
+def setBias(newBias):
+    return controller.setBias(newBias)
+
+
+@eel.expose
+def setNoise(minNoise, maxNoise):
+    return controller.setNoise(minNoise, maxNoise)
 
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
 
-    if portIsUsed(PORT):
+    if checkIfPortIsUsed(PORT):
         errorMsg = "O simux já está rodando ou a porta {} já está aberta".format(PORT)
         print(errorMsg)
         showErrror(errorMsg)

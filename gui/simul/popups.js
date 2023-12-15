@@ -1,17 +1,22 @@
 const initPopups = () => {
   $('#kp').inputmask('numeric', {
     min: 0.1,
-    max: 5,
+    max: 10,
+    digits: 1,
     clearMaskOnLostFocus: false
   })
   $('#ki').inputmask('numeric', {
     min: 0,
-    max: 30,
+    max: 5,
+    digits: 2,
+    digitsOptional: true,
     clearMaskOnLostFocus: false
   })
   $('#kd').inputmask('numeric', {
     min: 0,
     max: 30,
+    digits: 2,
+    digitsOptional: true,
     clearMaskOnLostFocus: false
   })
   $('#simulation_input').inputmask('numeric', {
@@ -54,14 +59,41 @@ const initPopups = () => {
     }
   })
 
+  $('#save_bias').on('click', () => {
+    if (data.status !== 'finished') {
+      const bias = parseFloat($('#bias_input').val() || 0)
+      const slider = $('#noise').data('ionRangeSlider')
+      const minNoise = slider.result.from
+      const maxNoise = slider.result.to
+
+      let changedBias = false
+      let changedNoise = false
+
+      if (bias !== data.formData.model_bias) {
+        setBias(bias)
+        changedBias = true
+      }
+      if ((minNoise !== data.formData.model_noise_min) || (maxNoise !== data.formData.model_noise_max)) {
+        setNoise(minNoise, maxNoise)
+        changedNoise = true
+      }
+
+      if (changedBias) {
+        generateToast(`Bias alterado para ${bias}%`)
+      }
+      if (changedNoise) {
+        generateToast('Ruído alterado')
+      }
+    }
+  })
+
   $.ui.dialog.prototype._focusTabbable = () => { }
 }
 
 const openPopupConstants = () => {
   $('#popup_constants').dialog({
     title: 'Constantes',
-    width: 320,
-    height: 'auto',
+    width: 340,
     minHeight: 380,
     modal: true,
     resizable: false,
@@ -76,12 +108,48 @@ const openPopupConstants = () => {
   $('#ki').val(data.formData.ki)
   $('#kd').val(data.formData.kd)
 
+  $('#bias_input').val(data.formData.model_bias)
   $('#model_gain').text(data.formData.model_gain)
   $('#model_tc').text(`${data.formData.model_tc}s`)
   $('#model_dt').text(`${data.formData.model_dt}s`)
   $('#model_bias').text(`${data.formData.model_bias}%`)
   $('#model_noise_min').text(`${data.formData.model_noise_min}%`)
   $('#model_noise_max').text(`${data.formData.model_noise_max}%`)
+
+  $('#model_kp').text(data.formData.kp)
+  if (data.formData.ki === 0) {
+    $('#model_ki').text('0')
+  } else {
+    $('#model_ki').text(`${data.formData.ki}`)
+  }
+  if (data.formData.kd === 0) {
+    $('#model_kd').text('0')
+  } else {
+    $('#model_kd').text(`${data.formData.kd}`)
+  }
+
+  $('#bias_input').inputmask('numeric', {
+    min: 0,
+    max: 80,
+    digits: 1,
+    clearMaskOnLostFocus: false
+  })
+  $('#noise').ionRangeSlider({
+    type: 'double',
+    min: 0,
+    max: 1,
+    step: 0.010,
+    from: 0,
+    to: 0.0,
+    grid: false,
+    onChange: (data) => {
+      if (data.from == 0 && data.to == 0) {
+        $('#help_noise').text('Ruído desabilitado')
+      } else {
+        $('#help_noise').text(`Ruído entre ${data.from} e ${data.to}%, para mais ou para menos.`)
+      }
+    }
+  })
 }
 
 const openPopupActions = () => {
@@ -89,7 +157,6 @@ const openPopupActions = () => {
     title: 'Ações',
     modal: true,
     width: 320,
-    height: 545,
     resizable: false,
     classes: {
       'ui-dialog': 'popup_shortcuts ui-corner-all ui-widget'
@@ -169,7 +236,7 @@ const openPopupExit = () => {
         text: 'Quero sair',
         class: 'btn btn-danger btn-exit focus_priority',
         click: async () => {
-          await eel.destroyController(data.controllerID)()
+          await eel.destroyController()()
           window.location.href = '../main.html'
         }
       }

@@ -5,7 +5,7 @@
   <title>Simux | Configurações</title>
   <link rel="stylesheet" type="text/css" href="../global.css">
   <link rel="stylesheet" type="text/css" href="../statics/bootstrap.css">
-  <link rel="stylesheet" href="../statics/rangeSlider.css" />
+  <link rel="stylesheet" type="text/css" href="../statics/rangeSlider.css" />
   <script type="text/javascript" src="../statics/jquery.js"></script>
   <script type="text/javascript" src="../statics/bootstrap.js"></script>
   <script type="text/javascript" src="../statics/jquery.mask.js"></script>
@@ -51,7 +51,7 @@
         <div class="w-50 ms-2">
           <label for="bias" class="form-label">Bias (%)</label>
           <input type="tel" class="form-control" name="model_bias" id="bias" value="20" tabindex="4" autocomplete="off">
-          <div id="help4" class="form-text">Mínimo de 0 e máximo de 60.</div>
+          <div id="help4" class="form-text">Mínimo de 0 e máximo de 80.</div>
         </div>
       </div>
       <div class="mb-3 w-100">
@@ -63,13 +63,13 @@
       <div class="mb-3 w-100">
         <label for="initialKp" class="form-label">Valor inicial do KP</label>
         <input type="tel" class="form-control" name="kp" id="initialKp" value="2" tabindex="6" autocomplete="off">
-        <div id="help7" class="form-text">Mínimo de 0,1 e máximo de 5.</div>
+        <div id="help7" class="form-text">Mínimo de 0,1 e máximo de 10.</div>
       </div>
       <div class="mb-3 d-sm-inline-flex w-100">
         <div class="w-50 me-2">
           <label for="initialKi" class="form-label">Valor inicial do Ki</label>
           <input type="tel" class="form-control" name="ki" id="initialKi" value="0" tabindex="7" autocomplete="off">
-          <div id="help8" class="form-text">Mínimo de 0 e máximo de 30.</div>
+          <div id="help8" class="form-text">Mínimo de 0 e máximo de 5.</div>
         </div>
         <div class="w-50 ms-2">
           <label for="initialKd" class="form-label">Valor inicial do Kd</label>
@@ -89,22 +89,27 @@
     $(document).ready(() => {
       $('#processGain').inputmask('numeric', {
         min: 0.1,
-        max: 5,
+        max: 6,
+        digits: 1,
         clearMaskOnLostFocus: false
       })
       $('#timeConstant').inputmask('numeric', {
         min: 1,
         max: 100,
+        digits: 1,
         clearMaskOnLostFocus: false
       })
       $('#deathTime').inputmask('numeric', {
         min: 1,
         max: 20,
+        digits: 1,
         clearMaskOnLostFocus: false
       })
-      $('#bias').inputmask('numeric', {
+      $('#bias_input').inputmask('numeric', {
         min: 0,
-        max: 60
+        max: 80,
+        digits: 1,
+        clearMaskOnLostFocus: false
       })
       $('#noise').ionRangeSlider({
         type: 'double',
@@ -124,22 +129,28 @@
       })
       $('#initialKp').inputmask('numeric', {
         min: 0.1,
-        max: 5,
+        max: 10,
+        digits: 1,
         clearMaskOnLostFocus: false
       })
       $('#initialKi').inputmask('numeric', {
         min: 0,
-        max: 30,
+        max: 5,
+        digits: 2,
+        digitsOptional: true,
         clearMaskOnLostFocus: false
       })
       $('#initialKd').inputmask('numeric', {
         min: 0,
         max: 30,
+        digits: 2,
+        digitsOptional: true,
         clearMaskOnLostFocus: false
       })
       $('#initialSP').inputmask('numeric', {
         min: 5,
         max: 90,
+        digits: 1,
         clearMaskOnLostFocus: false
       })
 
@@ -163,7 +174,7 @@
         if ((e.ctrlKey || e.altKey) && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
           e.preventDefault()
         }
-        if ((e.altKey || e.ctrlKey) && (e.key === '=' || e.key === '-')) {
+        if ((e.altKey || e.ctrlKey) && (e.key === '=' || e.key === '-' || e.key === '_' || e.key === '+')) {
           e.preventDefault()
         }
         if (

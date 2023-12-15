@@ -20,9 +20,7 @@
     <p>Versão v<b id="version"></b> | Desenvolvido por Pedro Mota</p>
     <p>Para começar, clique no botão abaixo ou tecle <b>Enter</b></p>
     <img src="./statics/favicon.svg" alt="Logo" width="400" height="400" style="rotate: 3deg;">
-    <a href="./form/form.html">
-      <button type="button" class="btn btn-primary doit">Fazer uma simulação</button>
-    </a>
+    <button type="button" class="btn btn-primary doit">Fazer uma simulação</button>
     <div class="mt-5 d-sm-inline-flex flex-column align-items-center">
       Consulte o repositório oficial no Github para mais informações
       em <a href="https://github.com/pedrocmota/simux" target="_blank">https://github.com/pedrocmota/simux</a>
@@ -38,12 +36,21 @@
   </style>
   <script>
     $(document).ready(() => {
-      const version = new URLSearchParams(window.location.search).get('version')
+      const versionURL = new URLSearchParams(window.location.search).get('version')
+      if (versionURL) {
+        localStorage.setItem('version', versionURL)
+      }
+      const version = localStorage.getItem('version')
+
       $('#version').text(version)
       $('body').keydown((e) => {
         if (e.key === 'Enter') {
           $('.doit').click()
         }
+      })
+
+      $('.btn').click(() => {
+        window.location.href = './form/form.html'
       })
 
       document.addEventListener('contextmenu', (e) => {
@@ -54,7 +61,7 @@
         if ((e.ctrlKey || e.altKey) && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
           e.preventDefault()
         }
-        if ((e.altKey || e.ctrlKey) && (e.key === '=' || e.key === '-')) {
+        if ((e.altKey || e.ctrlKey) && (e.key === '=' || e.key === '-' || e.key === '_' || e.key === '+')) {
           e.preventDefault()
         }
         if (
