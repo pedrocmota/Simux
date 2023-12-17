@@ -139,8 +139,8 @@ const openPopupConstants = () => {
     min: 0,
     max: 1,
     step: 0.010,
-    from: 0,
-    to: 0.0,
+    from: data.formData.model_noise_min,
+    to: data.formData.model_noise_max,
     grid: false,
     onChange: (data) => {
       if (data.from == 0 && data.to == 0) {
@@ -150,6 +150,12 @@ const openPopupConstants = () => {
       }
     }
   })
+
+  if (data.formData.model_noise_min == 0 && data.formData.model_noise_max == 0) {
+    $('#help_noise').text('Ruído desabilitado')
+  } else {
+    $('#help_noise').text(`Ruído entre ${data.formData.model_noise_min} e ${data.formData.model_noise_max}%, para mais ou para menos.`)
+  }
 }
 
 const openPopupActions = () => {

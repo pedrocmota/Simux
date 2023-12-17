@@ -8,7 +8,7 @@ from typing import List
 from simulator import Simulator
 
 PORT = 3345
-VERSION = "0.0.6"
+VERSION = "0.0.7"
 
 
 def showErrror(error: str):
