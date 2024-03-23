@@ -47,17 +47,17 @@
     </div>
     <div class="toolbox pv_box tool2" tabindex="2">
       <span class="toolbox_value_title">VP</span>
-      <span class="toolbox_value pv_value">0%</span>
+      <input class="pv_input" value="0%" disabled autocomplete="off" />
     </div>
     <div class="toolbox mv_box tool3" tabindex="3">
       <span class="toolbox_value_title">VM</span>
-      <span class="toolbox_value mv_value">0%</span>
+      <input class="mv_input" value="0%" disabled autocomplete="off" />
     </div>
     <div class="toolbox main_box tool4" tabindex="4">
       <span><b class="current_status status_paused">PAUSADO</b></span>
       <span class="current_speed">Velocidade: 1x</span>
       <span class="current_time">0s</span>
-      <span class="time_status">CONTINUAR</span>
+      <span class="mode">MODO AUTOMÁTICO</span>
     </div>
     <div class="toolbox box_constants tool5" tabindex="5">
       <span class="toolbox_button">Constantes</span>
@@ -74,6 +74,24 @@
       generateChart()
       startShortcut()
       initPopups()
+
+      if (data.formData.controller_type === 'ON/OFF') {
+        chart.axisY[0].stripLines[0].set('value', data.formData.initialHS)
+
+        $('#bias-tab').text('Ruído')
+      }
+
+      if (data.formData.loop === 'CLOSED') {
+        $('.loop_open').addClass('btn-secondary')
+        $('.loop_open').removeClass('btn-primary')
+        $('.loop_closed').addClass('btn-primary')
+        $('.loop_closed').removeClass('btn-secondary')
+      } else {
+        $('.loop_closed').addClass('btn-secondary')
+        $('.loop_closed').removeClass('btn-primary')
+        $('.loop_open').addClass('btn-primary')
+        $('.loop_open').removeClass('btn-secondary')
+      }
     })
 
     const URL = new URLSearchParams(window.location.search)
@@ -93,7 +111,10 @@
         mv: [0]
       },
       formData: {
-        controller_action: URL.get('controller_action'),
+        mode: 'AUTOMATIC',
+        controller_type: URL.get('controller_type') || 'PID',
+        controller_action: URL.get('controller_action') || 'DIRECT',
+        loop: URL.get('loop') || 'OPEN',
         model_gain: parseFloat(URL.get('model_gain') || 2),
         model_tc: parseFloat(URL.get('model_tc') || 20),
         model_dt: parseFloat(URL.get('model_dt') || 5),
@@ -101,9 +122,15 @@
         kp: parseFloat(URL.get('kp') || 2),
         ki: parseFloat(URL.get('ki') || 0),
         kd: parseFloat(URL.get('kd') || 0),
+        initialHS: parseFloat(URL.get('initialHS') || 40),
         initSP: parseFloat(URL.get('initSP') || 50),
         model_noise_min: parseFloat(URL.get('model_noise_min') || 0),
         model_noise_max: parseFloat(URL.get('model_noise_max') || 0)
+      },
+      selecting: {
+        sp: false,
+        pv: false,
+        mv: false
       }
     }
 
@@ -125,8 +152,8 @@
     })
 
     $('.sp_input').val(data.formData.initSP + '%')
-    $('.pv_value').text('0%')
-    $('.mv_value').text('0%')
+    $('.pv_input').val('0%')
+    $('.mv_input').val('0%')
   </script>
 </body>
 
@@ -145,34 +172,43 @@
   <div class="tab-content" id="constants-tab-content">
     <div class="tab-pane show active" id="actions" role="tabpanel" aria-labelledby="actions-tab">
       <div>
-        <div class="mb-3 w-100 mt-2">
+        <div class="mb-3 w-100 mt-2 kp_form">
           <label for="kp" class="form-label">Valor de KP</label>
           <input type="tel" class="form-control" name="kp" id="kp" autocomplete="off">
           <div id="help1" class="form-text">Mínimo de 0,1 e máximo de 10.</div>
         </div>
-        <div class="mb-3 d-sm-inline-flex w-100">
+        <div class="mb-3 d-sm-inline-flex w-100 ki_form">
           <div class="w-50 me-2">
             <label for="ki" class="form-label">Valor de Ki</label>
             <input type="tel" class="form-control" name="ki" id="ki" autocomplete="off">
             <div id="help2" class="form-text">Mínimo de 0 e máximo de 5.</div>
           </div>
-          <div class="w-50 ms-2">
-            <label for="initialKd" class="form-label">Valor de Kd</label>
+          <div class="w-50 ms-2 kd_form">
+            <label for="kd" class="form-label">Valor de Kd</label>
             <input type="tel" class="form-control" name="kd" id="kd" autocomplete="off">
             <div id="help3" class="form-text">Mínimo de 0 e máximo de 30.</div>
+          </div>
+        </div>
+        <div class="mb-3 w-100 hs_form mt-2 mb-2" style="display: none;min-height: 118px;">
+          <label for="hs" class="form-label">Valor da histerese (%)</label>
+          <input type="tel" class="form-control" name="hs" id="hs" autocomplete="off">
+          <div id="help4" class="form-text">
+            Mínimo de 0% e máximo de 90%.
+            <br />
+            Definir como 0% irá desabilitar a histerese.
           </div>
         </div>
         <button id="save_constants" class="btn btn-primary w-100 mt-2 mb-1">Salvar</button>
       </div>
     </div>
     <div class="tab-pane" id="bias" role="bias" aria-labelledby="bias-tab">
-      <div class="w-100 mt-2">
+      <div class="w-100 mt-2 bias_form">
         <label for="bias_input" class="form-label">Bias (%)</label>
         <input type="tel" class="form-control" name="bias_input" id="bias_input" value="20" tabindex="4" autocomplete="off">
         <div id="help_bias" class="form-text">Mínimo de 0 e máximo de 80.</div>
       </div>
-      <div class="mb-3 w-100">
-        <label for="noise" class="form-label" style="margin-top: 14px;">Ruído do processo:</label>
+      <div class="mb-3 w-100 noise_form">
+        <label for="noise" class="form-label label_noise" style="margin-top: 14px;">Ruído do processo:</label>
         <input type="text" id="noise" name="noise" tabindex="5" autocomplete="off" />
         <div id="help_noise" style="height: 42px;" class="form-text">Ruído desabilitado</div>
       </div>
@@ -182,6 +218,22 @@
       <div class="card card-body mt-2">
         <table>
           <tbody>
+            <tr>
+              <td class="loopName">Modo da malha: </td>
+              <td id="model_loop"></td>
+            </tr>
+            <tr>
+              <td class="processControllerTypeName">Tipo do controlador: </td>
+              <td id="controller_type"></td>
+            </tr>
+            <tr>
+              <td class="processControllerTypeModeName">Modo do controlador: </td>
+              <td id="controller_mode"></td>
+            </tr>
+            <tr>
+              <td class="processControllerActionName">Ação do controlador: </td>
+              <td id="model_action"></td>
+            </tr>
             <tr>
               <td class="processConstantName">Ganho do processo: </td>
               <td id="model_gain"></td>
@@ -223,6 +275,10 @@
               <td class="processKdName">Valor Kd: </td>
               <td id="model_kd"></td>
             </tr>
+            <tr style="display: none;">
+              <td class="processHsName">Valor Kp: </td>
+              <td id="model_hs"></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -237,6 +293,9 @@
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="scale-tab" data-bs-toggle="tab" data-bs-target="#scale" type="button" role="tab" aria-controls="scale" aria-selected="false">Escalas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="loop-tab" data-bs-toggle="tab" data-bs-target="#loop" type="button" role="tab" aria-controls="loop" aria-selected="false">Malha</button>
     </li>
   </ul>
   <div class="tab-content" id="actions-tab-content">
@@ -270,6 +329,24 @@
           <a id="scale-5" class="list-group-item list-group-item-action scales text-light" onclick="setScale(5)">1200s - 1500s</a>
           <a id="scale-6" class="list-group-item list-group-item-action scales text-light" onclick="setScale(6)">1500s - 1800s</a>
         </div>
+      </div>
+    </div>
+    <div class="tab-pane" id="loop" role="tabpanel" aria-labelledby="loop-tab">
+      <div class="btn-group mt-3 w-100" role="group">
+        <button type="button" class="btn btn-secondary w-50 loop_button loop_manual" onclick="setMode('MANUAL')">
+          Modo manual
+        </button>
+        <button type="button" class="btn btn-primary w-50 loop_button loop_automatic" onclick="setMode('AUTOMATIC')">
+          Modo automático
+        </button>
+      </div>
+      <div class="btn-group mt-4 w-100" role="group">
+        <button type="button" class="btn btn-secondary w-50 loop_button loop_open" onclick="setLoop('OPEN')">
+          Malha aberta
+        </button>
+        <button type="button" class="btn btn-primary w-50 loop_button loop_closed" onclick="setLoop('CLOSED')">
+          Malha fechada
+        </button>
       </div>
     </div>
   </div>

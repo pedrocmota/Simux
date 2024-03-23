@@ -24,37 +24,58 @@ const initPopups = () => {
     max: 1800,
     digits: 0
   })
+  $('#hs').inputmask('numeric', {
+    min: 0,
+    max: 90,
+    digits: 1,
+    clearMaskOnLostFocus: false
+  })
 
   $('#save_constants').on('click', () => {
     if (data.status !== 'finished') {
-      const kp = parseFloat($('#kp').val() || 0)
-      const ki = parseFloat($('#ki').val() || 0)
-      const kd = parseFloat($('#kd').val() || 0)
-      let changedKp = false
-      let changedKi = false
-      let changedKd = false
-
-      if (kp !== data.formData.kp) {
-        setKp(kp)
-        changedKp = true
+      if(data.formData.controller_type === 'PID') {
+        const kp = parseFloat($('#kp').val() || 0)
+        const ki = parseFloat($('#ki').val() || 0)
+        const kd = parseFloat($('#kd').val() || 0)
+        let changedKp = false
+        let changedKi = false
+        let changedKd = false
+  
+        if (kp !== data.formData.kp) {
+          setKp(kp)
+          changedKp = true
+        }
+        if (ki !== data.formData.ki) {
+          setKi(ki)
+          changedKi = true
+        }
+        if (kd !== data.formData.kd) {
+          setKd(kd)
+          changedKd = true
+        }
+  
+        if (changedKp) {
+          generateToast(`Kp alterado para ${kp}.`)
+        }
+        if (changedKi) {
+          generateToast(`Ki alterado para ${ki}.`)
+        }
+        if (changedKd) {
+          generateToast(`Kd alterado para ${kd}.`)
+        }
       }
-      if (ki !== data.formData.ki) {
-        setKi(ki)
-        changedKi = true
-      }
-      if (kd !== data.formData.kd) {
-        setKd(kd)
-        changedKd = true
-      }
-
-      if (changedKp) {
-        generateToast(`Kp alterado para ${kp}`)
-      }
-      if (changedKi) {
-        generateToast(`Ki alterado para ${ki}`)
-      }
-      if (changedKd) {
-        generateToast(`Kd alterado para ${kd}`)
+      if(data.formData.controller_type === 'ON/OFF') {
+        const hs = parseFloat($('#hs').val() || 0)
+        let changedHs = false
+  
+        if (hs !== data.formData.initialHS) {
+          setHS(hs)
+          changedHs = true
+        }
+  
+        if (changedHs) {
+          generateToast(`Histerese alterada para ${hs}.`)
+        }
       }
     }
   })
@@ -79,13 +100,24 @@ const initPopups = () => {
       }
 
       if (changedBias) {
-        generateToast(`Bias alterado para ${bias}%`)
+        generateToast(`Bias alterado para ${bias}%.`)
       }
       if (changedNoise) {
-        generateToast('Ruído alterado')
+        generateToast('Ruído alterado.')
       }
     }
   })
+
+  if(data.formData.controller_type === 'ON/OFF') {
+    $('.kp_form').attr('style', 'display:none !important')
+    $('.ki_form').attr('style', 'display:none !important')
+    $('.kd_form').attr('style', 'display:none !important')
+    $('.bias_form').attr('style', 'display:none !important')
+    $('.hs_form').show()
+
+    $('.label_noise').removeAttr('style')
+    $('.noise_form').addClass('mt-2')
+  }
 
   $.ui.dialog.prototype._focusTabbable = () => { }
 }
@@ -94,7 +126,6 @@ const openPopupConstants = () => {
   $('#popup_constants').dialog({
     title: 'Constantes',
     width: 340,
-    minHeight: 380,
     modal: true,
     resizable: false,
     open: () => {
@@ -107,7 +138,12 @@ const openPopupConstants = () => {
   $('#kp').val(data.formData.kp)
   $('#ki').val(data.formData.ki)
   $('#kd').val(data.formData.kd)
+  $('#hs').val(data.formData.initialHS)
 
+  $('#model_loop').text(data.formData.loop === 'OPEN' ? 'Aberta' : 'Fechada')
+  $('#controller_type').text(data.formData.controller_type === 'PID' ? 'PID' : 'ON/OFF')
+  $('#controller_mode').text(data.formData.mode === 'AUTOMATIC' ? 'Automático' : 'Manual')
+  $('#model_action').text(data.formData.controller_action === 'DIRECT' ? 'Direta' : 'Reversa')
   $('#bias_input').val(data.formData.model_bias)
   $('#model_gain').text(data.formData.model_gain)
   $('#model_tc').text(`${data.formData.model_tc}s`)
@@ -116,16 +152,16 @@ const openPopupConstants = () => {
   $('#model_noise_min').text(`${data.formData.model_noise_min}%`)
   $('#model_noise_max').text(`${data.formData.model_noise_max}%`)
 
-  $('#model_kp').text(data.formData.kp)
+  $('#model_kp').text(`${data.formData.kp}”`)
   if (data.formData.ki === 0) {
-    $('#model_ki').text('0')
+    $('#model_ki').text('0”')
   } else {
-    $('#model_ki').text(`${data.formData.ki}`)
+    $('#model_ki').text(`${data.formData.ki}”`)
   }
   if (data.formData.kd === 0) {
-    $('#model_kd').text('0')
+    $('#model_kd').text('0”')
   } else {
-    $('#model_kd').text(`${data.formData.kd}`)
+    $('#model_kd').text(`${data.formData.kd}”`)
   }
 
   $('#bias_input').inputmask('numeric', {
@@ -162,7 +198,7 @@ const openPopupActions = () => {
   $('#popup_commands').dialog({
     title: 'Ações',
     modal: true,
-    width: 320,
+    width: 338,
     resizable: false,
     classes: {
       'ui-dialog': 'popup_shortcuts ui-corner-all ui-widget'

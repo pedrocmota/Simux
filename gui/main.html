@@ -6,12 +6,15 @@
   <link rel="stylesheet" type="text/css" href="./global.css">
   <link rel="stylesheet" type="text/css" href="./statics/bootstrap.css">
   <script type="text/javascript" src="./statics/jquery.js"></script>
+  <script type="text/javascript" src="./statics/jquery-ui.js"></script>
   <script type="text/javascript" src="./statics/bootstrap.js"></script>
   <script type="text/javascript" src="/eel.js" onload="IS_DEV=false" onerror="IS_DEV=true"></script>
   <script type="text/javascript" src="./statics/replace_eel.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="./statics/favicon.svg">
+  <link rel="stylesheet" type="text/css" href="./statics/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="./simul/popups.css">
 </head>
 
 <body>
@@ -21,10 +24,11 @@
     <p>Para começar, clique no botão abaixo ou tecle <b>Enter</b></p>
     <img src="./statics/favicon.svg" alt="Logo" width="400" height="400" style="rotate: 3deg;">
     <button type="button" class="btn btn-primary doit">Fazer uma simulação</button>
-    <div class="mt-5 d-sm-inline-flex flex-column align-items-center">
+    <div class="mt-5 mb-3 d-sm-inline-flex flex-column align-items-center">
       Consulte o repositório oficial no Github para mais informações
       em <a href="https://github.com/pedrocmota/simux" target="_blank">https://github.com/pedrocmota/simux</a>
     </div>
+    <p>Contato do desenvolvedor: pedrocerqueiramota@gmail.com</p>
   </div>
   <style>
     @media screen and (max-height: 736px) {
@@ -40,7 +44,7 @@
       if (versionURL) {
         localStorage.setItem('version', versionURL)
       }
-      const version = localStorage.getItem('version')
+      const version = localStorage.getItem('version') || '0.0.1'
 
       $('#version').text(version)
       $('body').keydown((e) => {
@@ -49,7 +53,7 @@
         }
       })
 
-      $('.btn').click(() => {
+      $('.doit').click(() => {
         window.location.href = './form/form.html'
       })
 
@@ -71,8 +75,48 @@
           e.preventDefault()
         }
       })
+
+      const checkVersion = () => {
+        fetch('https://api.github.com/repos/pedrocmota/simux/releases/latest')
+          .then(response => response.json())
+          .then((response) => {
+            const url = response.assets[0].browser_download_url
+            const regex = /v(\d+)\.(\d+)\.(\d+)/
+            const match = url.match(regex)
+            if (match) {
+              const major = parseInt(match[1])
+              const minor = parseInt(match[2])
+              const patch = parseInt(match[3])
+              const versionNumber = parseFloat(`${major}.${minor}${patch}`)
+              console.info('Versão mais recente:', versionNumber, 'Versão atual:', parseFloat(version))
+              if (versionNumber > parseFloat(version)) {
+                $('#popup_update').dialog({
+                  title: 'Nova versão disponível',
+                  modal: true,
+                  width: 338,
+                  resizable: false,
+                  classes: {
+                    'ui-dialog': 'popup_shortcuts ui-corner-all ui-widget'
+                  },
+                  open: () => {
+                    $('#actual').text(version)
+                    $('#new').text(`${major}.${minor}.${patch}`)
+                  }
+                })
+              }
+            }
+          }).catch(err => console.error(err))
+      }
+      checkVersion()
     })
   </script>
+  <div id="popup_update" style="display: none;">
+    <p>Você está usando a versão v<b id="actual"></b> do Simux e a mais recente é a v<b id="new"></b></p>
+    <p>Para baixar a nova versão, clique no botão abaixo.</p>
+    <a href="https://github.com/pedrocmota/Simux/releases" target="_blank" class="btn btn-primary" style="color: white">
+      Baixar nova versão
+    </a>
+  </div>
 </body>
 
 </html>

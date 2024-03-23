@@ -96,3 +96,38 @@
   border-top-width: 0 !important;
   cursor: pointer;
 }
+
+.loop_button {
+  z-index: 1 !important;
+}
+
+.ui-dialog {
+  background-color: #2d3748 !important;
+  color: white !important;
+  z-index: 99999 !important;
+  border: 1px solid #575863 !important;
+}
+
+.ui-dialog>* {
+  color: white !important;
+}
+
+.ui-dialog-titlebar, .ui-dialog-buttonpane {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.ui-dialog-titlebar-close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none !important;
+  background-color: transparent;
+}
+
+.ui-dialog-titlebar-close:after {
+  content: "x";
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}

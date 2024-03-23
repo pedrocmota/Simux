@@ -5,15 +5,11 @@ from eel import edge
 import os
 import subprocess as sps
 from typing import List
-from simulator import Simulator
+from pid import Simulator
+import ctypes
 
 PORT = 3345
-VERSION = "0.0.7"
-
-
-def showErrror(error: str):
-    cmd = f"Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('{error}', 'Simux - Erro')"
-    os.system(f'powershell -Command "{cmd}"')
+VERSION = "1.0.0"
 
 
 def overrideEdgeRun(_path: str, options: any, start_urls: List[str]) -> None:
@@ -25,7 +21,12 @@ def overrideEdgeRun(_path: str, options: any, start_urls: List[str]) -> None:
             cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE, shell=True
         )
     except:
-        showErrror("Erro ao abrir o navegador. Verifique se o Edge instá instalado")
+        ctypes.windll.user32.MessageBoxW(
+            0,
+            "Erro ao abrir o navegador. Verifique se o Edge está instalado",
+            "Simux - Erro",
+            16,
+        )
         exit(1)
 
 
@@ -100,14 +101,29 @@ def setBias(newBias):
 def setNoise(minNoise, maxNoise):
     return controller.setNoise(minNoise, maxNoise)
 
+@eel.expose
+def setMode(newMode):
+    return controller.setMode(newMode)
+
+@eel.expose
+def setMV(newMV):
+    return controller.setMV(newMV)
+
+@eel.expose
+def setLoop(newLoop):
+    return controller.setLoop(newLoop)
+
+@eel.expose
+def setPV(newPV):
+    return controller.setPV(newPV)
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
 
     if checkIfPortIsUsed(PORT):
-        errorMsg = "O simux já está rodando ou a porta {} já está aberta".format(PORT)
+        errorMsg = "O Simux já está rodando ou a porta {} já está aberta".format(PORT)
         print(errorMsg)
-        showErrror(errorMsg)
+        ctypes.windll.user32.MessageBoxW(0, errorMsg, "Simux - Erro", 16)
         exit(1)
 
     is_nuitka = "__compiled__" in globals()

@@ -8,29 +8,33 @@ import random
 
 
 class PID_Controller(object):
-    def __init__(self):
+    def __init__(self, mode, loop):
         self.Kp, self.Ki, self.Kd = 0, 0, 0
-        self.setpoint = 50
-        self._min_output, self._max_output = 0, 100
+        self._min_output, self._max_output = -100, 200
         self._proportional = 0
         self._integral = 0
         self._derivative = 0
-        self.output_limits = (0, 100)
+        self.output_limits = (-100, 200)
         self._last_eD = 0
         self._lastMV = 0
         self._d_init = 0
+        self.mode = mode
+        self.loop = loop
+        self.manualMV = 0
         self.reset()
 
-    def __call__(self, PV=0, SP=0, direction="Direct"):
-        e = SP - PV
+    def __call__(self, PV=0, SP=0):
+        if(self.mode == "MANUAL"):
+            return self.manualMV
+        e = SP - PV if self.loop == "CLOSED" else PV - SP
         self._proportional = self.Kp * e
 
         if self._lastMV < 100 and self._lastMV > 0:
             self._integral += self.Ki * e
 
-        if self.Kp == 0 and self._lastMV == 100 and self.Ki * e < 0:
+        if self.Kp == 0 and self._lastMV >= 100 and self.Ki * e < 0:
             self._integral += self.Ki * e
-        if self.Kp == 0 and self._lastMV == 0 and self.Ki * e > 0:
+        if self.Kp == 0 and self._lastMV <= 0 and self.Ki * e > 0:
             self._integral += self.Ki * e
 
         eD = -PV
@@ -45,6 +49,7 @@ class PID_Controller(object):
 
         self._last_eD = eD
         self._lastMV = MV
+        self.manualMV = MV
         return MV
 
     @property
@@ -66,7 +71,7 @@ class PID_Controller(object):
     @output_limits.setter
     def output_limits(self, limits):
         if limits is None:
-            self._min_output, self._max_output = 0, 100
+            self._min_output, self._max_output = -100, 200
             return
         min_output, max_output = limits
         self._min_output = min_output
@@ -101,10 +106,18 @@ class PID_Controller(object):
     def setKd(self, newKd):
         self.Kd = newKd
 
+    def setManualMV(self, newMV):
+        self.manualMV = newMV
+
+    def setLoop(self, newLoop):
+        self.loop = newLoop
+
 
 class FOPDT_Model(object):
-    def __init__(self):
+    def __init__(self, loop):
         self.work_MV = []
+        self.loop = loop
+        self.manualPV = 50
 
     def change_params(self, data):
         self.Gain, self.Time_Constant, self.Dead_Time, self.Bias = data
@@ -120,12 +133,24 @@ class FOPDT_Model(object):
         return dydt
 
     def update(self, work_PV, ts):
+        if(self.loop == "OPEN"):
+            return self.manualPV
         y = odeint(self._calc, work_PV, ts)
-        return y[-1]
+        pv = y[-1]
+        self.manualPV = pv
+        return pv
+
+    def setLoop(self, newLoop):
+        self.loop = newLoop
+
+    def setManualPV(self, newPV):
+        self.manualPV = newPV
 
 
 class Simulator:
     def __init__(self, params):
+        self.mode = params.get("mode")
+        self.loop = params.get("loop")
         self.direction = params.get("controller_action")
         self.model_gain = params.get("model_gain")
         self.model_tc = params.get("model_tc")
@@ -148,8 +173,8 @@ class Simulator:
         )
         self.noise *= np.random.choice([-1, 1], self.maxsize)
 
-        self.pid = PID_Controller()
-        self.process_model = FOPDT_Model()
+        self.pid = PID_Controller(self.mode, self.loop)
+        self.process_model = FOPDT_Model(self.loop)
 
         self.SP = np.zeros(self.maxsize)
         self.PV = np.zeros(self.maxsize)
@@ -177,7 +202,7 @@ class Simulator:
         else:
             self.SP[i] = self.newSP
 
-        self.MV[i] = self.pid(self.PV[i], self.SP[i], self.direction)
+        self.MV[i] = self.pid(self.PV[i], self.SP[i])
 
         if i < (self.maxsize - 1):
             self.PV[i + 1] = (
@@ -188,7 +213,7 @@ class Simulator:
 
         mv_bias = (
             (self.MV[i] + self.model_bias)
-            if self.direction == "Direct"
+            if self.direction == "DIRECT"
             else (self.MV[i] - self.model_bias)
         )
 
@@ -205,6 +230,12 @@ class Simulator:
 
     def setSP(self, value):
         self.newSP = value
+
+    def setMV(self, value):
+        self.pid.setManualMV(value)
+
+    def setPV(self, value):
+        self.process_model.setManualPV(value)
 
     def setKp(self, value):
         self.kp = value
@@ -231,3 +262,11 @@ class Simulator:
             self.model_noise_min, self.model_noise_max, self.maxsize
         )
         self.noise *= np.random.choice([-1, 1], self.maxsize)
+
+    def setMode(self, mode):
+        self.mode = mode
+        self.pid.mode = mode
+
+    def setLoop(self, loop):
+        self.process_model.setLoop(loop)
+        self.pid.setLoop(loop)

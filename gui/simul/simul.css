@@ -67,35 +67,10 @@
 
 }
 
-/*  */
-
-.ui-dialog {
-  background-color: #2d3748 !important;
-  color: white !important;
-  z-index: 99999 !important;
-  border: 1px solid #575863 !important;
+.sp_input, .pv_input, .mv_input {
+  pointer-events: none;
 }
 
-.ui-dialog>* {
-  color: white !important;
-}
-
-.ui-dialog-titlebar, .ui-dialog-buttonpane {
-  background-color: transparent !important;
-  border: none !important;
-}
-
-.ui-dialog-titlebar-close {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none !important;
-  background-color: transparent;
-}
-
-.ui-dialog-titlebar-close:after {
-  content: "x";
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
+.mode_manual {
+  color: rgb(252, 203, 45);
 }

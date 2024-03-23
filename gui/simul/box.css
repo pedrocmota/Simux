@@ -77,18 +77,37 @@
   font-size: 22px;
 }
 
-.sp_input {
+.sp_input, .pv_input, .mv_input {
   width: 100%;
   height: 60px;
   background-color: transparent;
   border: none;
   outline: none;
-  color: #4f81bc;
   font-size: 40px;
   text-align: center !important;
   cursor: pointer;
 }
 
+.sp_input {
+  color: #4f81bc;
+}
+
+.pv_input {
+  color: #c0504d;
+}
+
+.mv_input {
+  color: #9bbb59;
+}
+
 .sp_input_selected {
   border: 4px solid #4f81bc;
+}
+
+.pv_input_selected {
+  border: 4px solid #c0504d;
+}
+
+.mv_input_selected {
+  border: 4px solid #9bbb59;
 }

@@ -23,10 +23,26 @@
     <form class="mt-3" style="width: 400px" method="get" action="../simul/simul.html">
       <div class="mb-3 w-100">
         <div>
+          <label for="controllerType" class="form-label">Tipo do controlador</label>
+          <select name="controller_type" id="controllerType" class="form-select" aria-label="Tipo do controlador" onchange="this.value === 'PID' ? onSelectPID() : onSelectONOFF()">
+            <option value="PID">PID</option>
+            <option value="ON/OFF">ON/OFF</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3 d-sm-inline-flex w-100 controller_loop_form">
+        <div class="w-50 me-2 controllerAction_form">
           <label for="controllerAction" class="form-label">Ação do controlador</label>
-          <select name="controller_action" id="controllerAction" class="form-select" aria-label="Ação do controlador" tabindex="0">
-            <option value="Direct">Direta</option>
-            <option value="Reverse">Reversa</option>
+          <select name="controller_action" id="controllerAction" class="form-select" aria-label="Ação do controlador">
+            <option value="DIRECT">Direta</option>
+            <option value="REVERSE">Reversa</option>
+          </select>
+        </div>
+        <div class="w-50 ms-2 loop_form">
+          <label for="loop" class="form-label">Modo inicial da malha</label>
+          <select name="loop" id="loop" class="form-select" aria-label="Malha">
+            <option value="CLOSED">Fechada</option>
+            <option value="OPEN">Aberta</option>
           </select>
         </div>
       </div>
@@ -43,12 +59,12 @@
         </div>
       </div>
       <div class="mb-3 d-sm-inline-flex w-100">
-        <div class="w-50 me-2">
+        <div class="w-50 me-2 dt_form">
           <label for="deathTime" class="form-label">Tempo morto (s)</label>
           <input type="tel" class="form-control" name="model_dt" id="deathTime" value="5" tabindex="3" autocomplete="off">
           <div id="help3" class="form-text">Mínimo de 1 e máximo de 20.</div>
         </div>
-        <div class="w-50 ms-2">
+        <div class="w-50 ms-2 bias_form">
           <label for="bias" class="form-label">Bias (%)</label>
           <input type="tel" class="form-control" name="model_bias" id="bias" value="20" tabindex="4" autocomplete="off">
           <div id="help4" class="form-text">Mínimo de 0 e máximo de 80.</div>
@@ -60,12 +76,12 @@
         <div id="help5" class="form-text">Ruído desabilitado</div>
       </div>
       <hr />
-      <div class="mb-3 w-100">
+      <div class="mb-3 w-100 kp_form">
         <label for="initialKp" class="form-label">Valor inicial do KP</label>
         <input type="tel" class="form-control" name="kp" id="initialKp" value="2" tabindex="6" autocomplete="off">
         <div id="help7" class="form-text">Mínimo de 0,1 e máximo de 10.</div>
       </div>
-      <div class="mb-3 d-sm-inline-flex w-100">
+      <div class="mb-3 d-sm-inline-flex w-100 kikd_form">
         <div class="w-50 me-2">
           <label for="initialKi" class="form-label">Valor inicial do Ki</label>
           <input type="tel" class="form-control" name="ki" id="initialKi" value="0" tabindex="7" autocomplete="off">
@@ -82,7 +98,16 @@
         <input type="tel" class="form-control" name="initSP" id="initialSP" value="50" tabindex="9" autocomplete="off">
         <div id="help10" class="form-text">Mínimo de 5% e máximo de 90%.</div>
       </div>
-      <button type="submit" class="btn btn-primary w-100 mt-2 mb-5" tabindex="10">Iniciar simulação</button>
+      <div class="mb-3 w-100 hs_form" style="display: none;">
+        <label for="initialHS" class="form-label">Valor inicial da histerese (%)</label>
+        <input type="tel" class="form-control" name="initialHS" id="initialHS" value="40" tabindex="10" autocomplete="off">
+        <div id="help11" class="form-text">
+          Mínimo de 0% e máximo de 90%.
+          <br/>
+          Definir como 0% irá desabilitar a histerese.
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 mt-2 mb-5" tabindex="11">Iniciar simulação</button>
     </form>
   </div>
   <script>
@@ -153,6 +178,12 @@
         digits: 1,
         clearMaskOnLostFocus: false
       })
+      $('#initialHS').inputmask('numeric', {
+        min: 0,
+        max: 90,
+        digits: 1,
+        clearMaskOnLostFocus: false
+      })
 
       $('form').submit((e) => {
         e.preventDefault()
@@ -192,7 +223,36 @@
         }
       })
     })
+
+    const onSelectPID = () => {
+      $('.hs_form').attr('style', 'display:none !important')
+
+      $('.kp_form').show()
+      $('.kikd_form').show()
+      $('.controller_loop_form').show()
+      $('.bias_form').show()
+      $('.dt_form').removeClass('w-100')
+      $('.dt_form').addClass('w-50')
+      $('.dt_form').addClass('me-2')
+    }
+
+    const onSelectONOFF = () => {
+      $('.kp_form').attr('style', 'display:none !important')
+      $('.kikd_form').attr('style', 'display:none !important')
+      $('.controller_loop_form').attr('style', 'display:none !important')
+      $('.bias_form').attr('style', 'display:none !important')
+
+      $('.hs_form').show()
+      $('.dt_form').addClass('w-100')
+      $('.dt_form').removeClass('w-50')
+      $('.dt_form').removeClass('me-2')
+    }
   </script>
+  <style>
+    body {
+      overflow-y: scroll;
+    }
+  </style>
 </body>
 
 </html>
