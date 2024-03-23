@@ -24,9 +24,8 @@
       <div class="mb-3 w-100">
         <div>
           <label for="controllerType" class="form-label">Tipo do controlador</label>
-          <select name="controller_type" id="controllerType" class="form-select" aria-label="Tipo do controlador" onchange="this.value === 'PID' ? onSelectPID() : onSelectONOFF()">
+          <select name="controller_type" id="controllerType" class="form-select" aria-label="Tipo do controlador">
             <option value="PID">PID</option>
-            <option value="ON/OFF">ON/OFF</option>
           </select>
         </div>
       </div>
@@ -97,15 +96,6 @@
         <label for="initialSP" class="form-label">Valor inicial do SP (%)</label>
         <input type="tel" class="form-control" name="initSP" id="initialSP" value="50" tabindex="9" autocomplete="off">
         <div id="help10" class="form-text">Mínimo de 5% e máximo de 90%.</div>
-      </div>
-      <div class="mb-3 w-100 hs_form" style="display: none;">
-        <label for="initialHS" class="form-label">Valor inicial da histerese (%)</label>
-        <input type="tel" class="form-control" name="initialHS" id="initialHS" value="40" tabindex="10" autocomplete="off">
-        <div id="help11" class="form-text">
-          Mínimo de 0% e máximo de 90%.
-          <br/>
-          Definir como 0% irá desabilitar a histerese.
-        </div>
       </div>
       <button type="submit" class="btn btn-primary w-100 mt-2 mb-5" tabindex="11">Iniciar simulação</button>
     </form>
@@ -178,12 +168,6 @@
         digits: 1,
         clearMaskOnLostFocus: false
       })
-      $('#initialHS').inputmask('numeric', {
-        min: 0,
-        max: 90,
-        digits: 1,
-        clearMaskOnLostFocus: false
-      })
 
       $('form').submit((e) => {
         e.preventDefault()
@@ -223,30 +207,6 @@
         }
       })
     })
-
-    const onSelectPID = () => {
-      $('.hs_form').attr('style', 'display:none !important')
-
-      $('.kp_form').show()
-      $('.kikd_form').show()
-      $('.controller_loop_form').show()
-      $('.bias_form').show()
-      $('.dt_form').removeClass('w-100')
-      $('.dt_form').addClass('w-50')
-      $('.dt_form').addClass('me-2')
-    }
-
-    const onSelectONOFF = () => {
-      $('.kp_form').attr('style', 'display:none !important')
-      $('.kikd_form').attr('style', 'display:none !important')
-      $('.controller_loop_form').attr('style', 'display:none !important')
-      $('.bias_form').attr('style', 'display:none !important')
-
-      $('.hs_form').show()
-      $('.dt_form').addClass('w-100')
-      $('.dt_form').removeClass('w-50')
-      $('.dt_form').removeClass('me-2')
-    }
   </script>
   <style>
     body {

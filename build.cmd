@@ -9,8 +9,8 @@ python -m nuitka ^
 --force-stderr-spec="%%TEMP%%\\simux-temp\\err.txt" ^
 --company-name="Pedro H.C Mota" ^
 --product-name="Simux" ^
---file-version="1.0.0" ^
---product-version="1.0.0" ^
+--file-version="0.0.8" ^
+--product-version="0.0.8" ^
 --file-description="Simux" ^
 --copyright="MIT 2023 - Pedro H.C Mota" ^
 --output-dir=".build" ^

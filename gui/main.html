@@ -88,8 +88,9 @@
               const minor = parseInt(match[2])
               const patch = parseInt(match[3])
               const versionNumber = parseFloat(`${major}.${minor}${patch}`)
-              console.info('Versão mais recente:', versionNumber, 'Versão atual:', parseFloat(version))
-              if (versionNumber > parseFloat(version)) {
+              const actualVersion = version.replace(/\.(?=[^.]*$)/, '')
+              console.info('Versão mais recente:', versionNumber, 'Versão atual:', actualVersion)
+              if (versionNumber > parseFloat(actualVersion)) {
                 $('#popup_update').dialog({
                   title: 'Nova versão disponível',
                   modal: true,

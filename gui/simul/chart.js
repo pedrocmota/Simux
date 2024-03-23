@@ -33,14 +33,6 @@ const generateChart = () => {
       labelFontSize: 16,
       gridThickness: 1,
       gridColor: '#444242',
-      stripLines: [{
-        value: -1,
-        label: 'Histerese',
-        labelFontColor: '#f8f8f2',
-        color: '#838DD6',
-        labelAlign: 'near',
-        lineDashType: 'dot'
-      }],
       labelFormatter: function (e) {
         return e.value + '%'
       }

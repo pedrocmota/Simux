@@ -9,7 +9,7 @@ from pid import Simulator
 import ctypes
 
 PORT = 3345
-VERSION = "1.0.0"
+VERSION = "0.0.8"
 
 
 def overrideEdgeRun(_path: str, options: any, start_urls: List[str]) -> None:
@@ -101,21 +101,26 @@ def setBias(newBias):
 def setNoise(minNoise, maxNoise):
     return controller.setNoise(minNoise, maxNoise)
 
+
 @eel.expose
 def setMode(newMode):
     return controller.setMode(newMode)
+
 
 @eel.expose
 def setMV(newMV):
     return controller.setMV(newMV)
 
+
 @eel.expose
 def setLoop(newLoop):
     return controller.setLoop(newLoop)
 
+
 @eel.expose
 def setPV(newPV):
     return controller.setPV(newPV)
+
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")

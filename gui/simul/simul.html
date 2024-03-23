@@ -75,12 +75,6 @@
       startShortcut()
       initPopups()
 
-      if (data.formData.controller_type === 'ON/OFF') {
-        chart.axisY[0].stripLines[0].set('value', data.formData.initialHS)
-
-        $('#bias-tab').text('Ruído')
-      }
-
       if (data.formData.loop === 'CLOSED') {
         $('.loop_open').addClass('btn-secondary')
         $('.loop_open').removeClass('btn-primary')
@@ -122,7 +116,6 @@
         kp: parseFloat(URL.get('kp') || 2),
         ki: parseFloat(URL.get('ki') || 0),
         kd: parseFloat(URL.get('kd') || 0),
-        initialHS: parseFloat(URL.get('initialHS') || 40),
         initSP: parseFloat(URL.get('initSP') || 50),
         model_noise_min: parseFloat(URL.get('model_noise_min') || 0),
         model_noise_max: parseFloat(URL.get('model_noise_max') || 0)
@@ -187,15 +180,6 @@
             <label for="kd" class="form-label">Valor de Kd</label>
             <input type="tel" class="form-control" name="kd" id="kd" autocomplete="off">
             <div id="help3" class="form-text">Mínimo de 0 e máximo de 30.</div>
-          </div>
-        </div>
-        <div class="mb-3 w-100 hs_form mt-2 mb-2" style="display: none;min-height: 118px;">
-          <label for="hs" class="form-label">Valor da histerese (%)</label>
-          <input type="tel" class="form-control" name="hs" id="hs" autocomplete="off">
-          <div id="help4" class="form-text">
-            Mínimo de 0% e máximo de 90%.
-            <br />
-            Definir como 0% irá desabilitar a histerese.
           </div>
         </div>
         <button id="save_constants" class="btn btn-primary w-100 mt-2 mb-1">Salvar</button>
@@ -274,10 +258,6 @@
             <tr>
               <td class="processKdName">Valor Kd: </td>
               <td id="model_kd"></td>
-            </tr>
-            <tr style="display: none;">
-              <td class="processHsName">Valor Kp: </td>
-              <td id="model_hs"></td>
             </tr>
           </tbody>
         </table>

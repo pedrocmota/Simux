@@ -33,13 +33,13 @@ const startShortcut = () => {
     if (String.fromCharCode(e.keyCode).match(/[^0-9.]/g)) {
       return false
     }
-    if($(e.target).val().includes('.') && e.keyCode === 46) {
+    if ($(e.target).val().includes('.') && e.keyCode === 46) {
       return false
     }
-    if($(e.target).val().length > 4 && $(e.target).val().includes('.')) {
+    if ($(e.target).val().length > 4 && $(e.target).val().includes('.')) {
       return false
     }
-    if($(e.target).val().length >= 2 && !$(e.target).val().includes('.') && e.keyCode !== 46) {
+    if ($(e.target).val().length >= 2 && !$(e.target).val().includes('.') && e.keyCode !== 46) {
       return false
     }
   })
@@ -117,10 +117,6 @@ const startShortcut = () => {
 
   // AÇÃO MUDANÇA pv
   const action_pv = () => {
-    if (data.formData.controller_type === 'ON/OFF') {
-      generateToast('Não é possível alterar a PV no controle ON/OFF.')
-      return
-    }
     if (data.formData.loop === 'CLOSED') {
       generateToast('Não é possível alterar a PV em malha fechada.')
       return
@@ -158,7 +154,7 @@ const startShortcut = () => {
       action_pv_cancel()
     }
   }
-  
+
   $('.pv_box').on('dblclick', action_pv)
   $('.pv_box').on('keydown', (e) => {
     if (e.which === 13) {
@@ -183,10 +179,6 @@ const startShortcut = () => {
 
   // AÇÃO MUDANÇA MV
   const action_mv = () => {
-    if (data.formData.controller_type === 'ON/OFF') {
-      generateToast('Não é possível alterar a VM no controle ON/OFF.')
-      return
-    }
     if (data.formData.mode === 'AUTOMATIC') {
       generateToast('Não é possível alterar a VM em modo automático.')
       return

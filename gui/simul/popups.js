@@ -24,23 +24,17 @@ const initPopups = () => {
     max: 1800,
     digits: 0
   })
-  $('#hs').inputmask('numeric', {
-    min: 0,
-    max: 90,
-    digits: 1,
-    clearMaskOnLostFocus: false
-  })
 
   $('#save_constants').on('click', () => {
     if (data.status !== 'finished') {
-      if(data.formData.controller_type === 'PID') {
+      if (data.formData.controller_type === 'PID') {
         const kp = parseFloat($('#kp').val() || 0)
         const ki = parseFloat($('#ki').val() || 0)
         const kd = parseFloat($('#kd').val() || 0)
         let changedKp = false
         let changedKi = false
         let changedKd = false
-  
+
         if (kp !== data.formData.kp) {
           setKp(kp)
           changedKp = true
@@ -53,7 +47,7 @@ const initPopups = () => {
           setKd(kd)
           changedKd = true
         }
-  
+
         if (changedKp) {
           generateToast(`Kp alterado para ${kp}.`)
         }
@@ -62,19 +56,6 @@ const initPopups = () => {
         }
         if (changedKd) {
           generateToast(`Kd alterado para ${kd}.`)
-        }
-      }
-      if(data.formData.controller_type === 'ON/OFF') {
-        const hs = parseFloat($('#hs').val() || 0)
-        let changedHs = false
-  
-        if (hs !== data.formData.initialHS) {
-          setHS(hs)
-          changedHs = true
-        }
-  
-        if (changedHs) {
-          generateToast(`Histerese alterada para ${hs}.`)
         }
       }
     }
@@ -108,17 +89,6 @@ const initPopups = () => {
     }
   })
 
-  if(data.formData.controller_type === 'ON/OFF') {
-    $('.kp_form').attr('style', 'display:none !important')
-    $('.ki_form').attr('style', 'display:none !important')
-    $('.kd_form').attr('style', 'display:none !important')
-    $('.bias_form').attr('style', 'display:none !important')
-    $('.hs_form').show()
-
-    $('.label_noise').removeAttr('style')
-    $('.noise_form').addClass('mt-2')
-  }
-
   $.ui.dialog.prototype._focusTabbable = () => { }
 }
 
@@ -138,11 +108,10 @@ const openPopupConstants = () => {
   $('#kp').val(data.formData.kp)
   $('#ki').val(data.formData.ki)
   $('#kd').val(data.formData.kd)
-  $('#hs').val(data.formData.initialHS)
 
   $('#model_loop').text(data.formData.loop === 'OPEN' ? 'Aberta' : 'Fechada')
-  $('#controller_type').text(data.formData.controller_type === 'PID' ? 'PID' : 'ON/OFF')
-  $('#controller_mode').text(data.formData.mode === 'AUTOMATIC' ? 'Automático' : 'Manual')
+  $('#controller_type').text(data.formData.controller_type === 'PID' ? 'PID' : '')
+  $('#controller_mode').text(data.formData.mode === 'AUTOMATIC' ? 'Auto' : 'Manual')
   $('#model_action').text(data.formData.controller_action === 'DIRECT' ? 'Direta' : 'Reversa')
   $('#bias_input').val(data.formData.model_bias)
   $('#model_gain').text(data.formData.model_gain)

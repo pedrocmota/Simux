@@ -172,7 +172,7 @@ const setNoise = async (newMinNoise, newMaxNoise) => {
 }
 
 const setMode = async (newMode) => {
-  if(data.formData.loop === 'OPEN') {
+  if (data.formData.loop === 'OPEN') {
     generateToast('Não é possível deixar em modo manual com malha aberta.')
     return
   }
@@ -186,7 +186,7 @@ const setMode = async (newMode) => {
 
     $('.mode').text('MODO AUTOMÁTICO')
     $('.mode').removeClass('mode_manual')
-    $('#controller_mode').text(data.formData.mode === 'AUTOMATIC' ? 'Automático' : 'Manual')
+    $('#controller_mode').text(data.formData.mode === 'AUTOMATIC' ? 'Auto' : 'Manual')
 
     generateToast('Controlador alterado para automático.')
   }
@@ -198,7 +198,7 @@ const setMode = async (newMode) => {
 
     $('.mode').text('MODO MANUAL')
     $('.mode').addClass('mode_manual')
-    $('#controller_mode').text(data.formData.mode === 'AUTOMATIC' ? 'Automático' : 'Manual')
+    $('#controller_mode').text(data.formData.mode === 'AUTOMATIC' ? 'Auto' : 'Manual')
 
     generateToast('Controlador alterado para manual.')
   }
@@ -209,7 +209,7 @@ const setMode = async (newMode) => {
 }
 
 const setLoop = async (newLoop) => {
-  if(data.formData.mode === 'MANUAL') {
+  if (data.formData.mode === 'MANUAL') {
     generateToast('Não é possível abrir a malha em modo manual.')
     return
   }
@@ -236,14 +236,6 @@ const setLoop = async (newLoop) => {
   if (!IS_DEV) {
     await eel.setLoop(newLoop)()
   }
-}
-
-const setHS = async (newHS) => {
-  data.formData.initialHS = newHS
-  chart.axisY[0].stripLines[0].set('value', newHS > 0 ? newHS : -1)
-  // if (!IS_DEV) {
-  //   await eel.setHS(newHS)()
-  // }
 }
 
 const pulseController = async (disableRender = false) => {

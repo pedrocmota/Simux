@@ -24,7 +24,7 @@ class PID_Controller(object):
         self.reset()
 
     def __call__(self, PV=0, SP=0):
-        if(self.mode == "MANUAL"):
+        if self.mode == "MANUAL":
             return self.manualMV
         e = SP - PV if self.loop == "CLOSED" else PV - SP
         self._proportional = self.Kp * e
@@ -133,7 +133,7 @@ class FOPDT_Model(object):
         return dydt
 
     def update(self, work_PV, ts):
-        if(self.loop == "OPEN"):
+        if self.loop == "OPEN":
             return self.manualPV
         y = odeint(self._calc, work_PV, ts)
         pv = y[-1]
